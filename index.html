@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title></title>
+
+        <!-- Bootstrap CSS and Font -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" integrity="sha256-PDJQdTN7dolQWDASIoBVrjkuOEaI137FI15sqI3Oxu8=" crossorigin="anonymous">
+
+        <style media="screen">
+            div.explanation {
+                text-align: justify;
+                text-justify: inter-word;
+            }
+            .math {
+
+            }
+            .reorder {
+                position: relative;
+                padding-right: 1em;
+            }
+            .reorder > .reorder-up {
+                cursor: pointer;
+                position: absolute;
+                top: -0.5ex;
+
+            }
+            .reorder-up:hover::before {
+                content: "\f235";
+            }
+            .reorder > .reorder-down {
+                cursor: pointer;
+                position: absolute;
+                bottom: -1.5ex;
+            }
+            .reorder-down:hover::before {
+                content: "\f229";
+            }
+
+            tbody > tr:first-of-type .reorder-up {
+                display: none;
+            }
+            tbody > tr:last-of-type .reorder-down {
+                display: none;
+            }
+
+            .card > .table > tbody > tr:last-of-type > td {
+                border-bottom-width: 0;
+            }
+
+            .modal-content > .nav.nav-tabs > .nav-item:first-of-type {
+                margin-left: 1rem!important;
+            }
+
+            .numberinputtable > tbody > tr > td > input {
+                min-width: 4em;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Title...</h1>
+            <!-- Define Infections with parameters -->
+            <div class="row row-cols-1 row-cols-lg-2">
+                <div class="col explanation">
+                    <h2>Models</h2>
+                </div>
+                <div class="col mb-3">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between">
+                            <span>Models</span>
+                            <span>
+                                <button class="btn btn-link p-0"><i class="bi bi-share"></i></button>
+                                <button class="btn btn-link p-0"><i class="bi bi-save"></i></button>
+                            </span>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item d-flex justify-content-between align-items-baseline">
+                                <span>SIS</span>
+                                <button class="btn btn-primary btn-sm">Load</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-baseline">
+                                <span>SIRD</span>
+                                <button class="btn btn-primary btn-sm">Load</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col explanation">
+                    <h2>Infection Types</h2>
+                </div>
+                <div class="col mb-3">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between">
+                            <span>Infection Types</span>
+                            <button type="button" name="button" class="btn btn-link py-0" aria-label="Add infection type" data-bs-toggle="modal" data-bs-target="#addEditInfectionTypeModal" data-infection-type="new"><i class="bi bi-plus-square"></i></button>
+                        </div>
+                        <table class="table mb-0">
+                            <tbody id="infectionTypeTableBody">
+                                <tr><td colspan="4"><i class="text-muted">No infection types have been defined, yet</i></td></tr>
+                            </tbody>
+                        </table>
+                        <template id="infectionTypeTableRowTemplate">
+                            <tr>
+                                <td class="infection-type-name">Alpha</td>
+                                <td class="math"><i>&beta;</i> = <span class="infection-type-beta">2.4</span></td>
+                                <td class="math"><i>&gamma;</i> = <span class="infection-type-gamma">1.4</span></td>
+                                <td class="text-end">
+                                    <button type="button" name="button" class="btn btn-link py-0 infection-type-edit-button" aria-label="Edit infection type" data-bs-toggle="modal" data-bs-target="#addEditInfectionTypeModal" data-infection-type="1"><i class="bi bi-pencil"></i></button>
+                                    <span class="reorder">
+                                        <i class="bi bi-caret-up reorder-up text-primary"></i>
+                                        <i class="bi bi-caret-down reorder-down text-primary"></i>
+                                    </span>
+                                </td>
+                            </tr>
+                        </template>
+                    </div>
+                </div>
+                <!-- Define Backgrounds -->
+                <div class="col explanation">
+                    <h2>Backgrounds</h2>
+                    <p>Define different backgrounds that can control different parameters like contact rate, chance of infecting and infection or infection outcome.</p>
+                    <p>Examples for backgrounds are age groups, death after infection or immunities after previous infection or vaccination. You might want to create a cross product of multiple such backgrounds.<p>
+                </div>
+                <div class="col mb-3">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between">
+                            <span>Backgrounds</span>
+                            <button type="button" name="button" class="btn btn-link py-0" aria-label="Add background" data-bs-toggle="modal" data-bs-target="#addEditBackgroundModal" data-background-number="new"><i class="bi bi-plus-square"></i></button>
+                        </div>
+                        <table class="table mb-0">
+                            <tbody id="backgroundTableBody">
+                                <tr><td colspan="4"><i class="text-muted">No backgrounds have been defined, yet</i></td></tr>
+                            </tbody>
+                        </table>
+                        <template id="backgroundTableRowTemplate">
+                            <tr>
+                                <td class="background-name">Alpha</td>
+                                <td class="text-end">
+                                    <button type="button" name="button" class="btn btn-link py-0 background-edit-button" aria-label="Edit infection type" data-bs-toggle="modal" data-bs-target="#addEditBackgroundModal" data-infection-type="1"><i class="bi bi-pencil"></i></button>
+                                    <span class="reorder">
+                                        <i class="bi bi-caret-up reorder-up text-primary"></i>
+                                        <i class="bi bi-caret-down reorder-down text-primary"></i>
+                                    </span>
+                                </td>
+                            </tr>
+                        </template>
+                    </div>
+                </div>
+                <!-- Define Background-contact matrix -->
+                <div class="col explanation">
+                    <h3>Contact rate between backgrounds</h3>
+                </div>
+                <div class="col mb-3">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between">
+                            <span>Background contact matrix</span>
+                            <button type="button" name="button" class="btn btn-link py-0" aria-label="Edit contact factors" data-bs-toggle="modal" data-bs-target="#editBackgroundContactMatrixModal"><i class="bi bi-pencil"></i></button>
+                        </div>
+                    </div>
+                    <!--<img src="..." class="card-img-bottom" alt="Heatmap showing the background contact matrix"/>-->
+                </div>
+                <!-- Define background infection parameters -->
+                <div class="col explanation">
+                    <h3>Background factors</h3>
+                </div>
+                <div class="col mb-3">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between">
+                            <span>Background infectious/exposed factors</span>
+                            <button type="button" name="button" class="btn btn-link py-0" aria-label="Edit infection factors" data-bs-toggle="modal" data-bs-target="#editInfectionFactorsMatrixModal"><i class="bi bi-pencil"></i></button>
+                        </div>
+                    </div>
+                    <!--<img src="..." class="card-img-bottom" alt="Heatmap showing the infecting/infection matrix"/>-->
+                </div>
+
+                <!-- Resulting infection chance??? contact * infection parameters -->
+
+                <!-- Define Background state machine -->
+                <div class="col explanation">
+                    <h3>Background transitions</h3>
+                    <p>Specify how the background changes after infection. This can be used to specify the portion of people that die because of infection or grant immunity through infection.</p>
+                </div>
+                <div class="col mb-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between">
+                                <span>Background transitions</span>
+                                <button type="button" name="button" class="btn btn-link py-0" aria-label="Edit background transitions" data-bs-toggle="modal" data-bs-target="#editBackgroundTransitionsModal"><i class="bi bi-pencil"></i></button>
+                            </div>
+                            <!--<ul class="nav nav-tabs card-header-tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="true" href="#">Infection A</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">Infection B</a>
+                                </li>
+                            </ul>-->
+                        </div>
+                    </div>
+                    <!--<img src="..." class="card-img-bottom" alt="Heatmap showing the background transitions"/>-->
+                </div>
+
+
+
+                <!-- Define start condition & Date -->
+                <div class="col explanation">
+                    <h3>Start conditions</h3>
+                </div>
+                <div class="col mb-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between">
+                                <span>Start conditions</span>
+                                <button type="button" name="button" class="btn btn-link py-0" aria-label="Edit start conditions" data-bs-toggle="modal" data-bs-target="#editStartConditionsModal"><i class="bi bi-pencil"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Define outside influences & events -->
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <!-- Calculate/Plot -->
+                <div class="col-12">
+                    <h3>Simulation</h3>
+                    <div class="mb-3">
+                        <label for="timestepnumberinput" class="form-label">Number of time steps</label>
+                        <input type="number" class="form-control" step="1" min="1" value="500" id="timestepnumberinput"/>
+                    </div>
+                    <button class="btn btn-primary" id="startsimulatonbutton">Start simulation</button>
+                </div>
+                <div class="col-12" id="plot1"></div>
+            </div>
+        </div>
+
+        <!-- New infection Modal--->
+        <div class="modal fade" id="addEditInfectionTypeModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addEditInfectionTypeModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addEditInfectionTypeModalLabel">Modal title</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="infectionTypeName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="infectionTypeName" placeholder="Infection type name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="infectionTypeBeta" class="form-label">&beta;</label>
+                            <input type="number" class="form-control" id="infectionTypeBeta">
+                        </div>
+                        <div class="mb-3">
+                            <label for="infectionTypeGamma" class="form-label">&gamma;</label>
+                            <input type="number" class="form-control" id="infectionTypeGamma">
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-between">
+                        <span>
+                            <button type="button" class="btn btn-danger formmodalsubmit" data-modalsubmittype="delete" aria-label="Delete infection type"><i class="bi bi-trash"></i></button>
+                        </span>
+                        <span>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary formmodalsubmit" data-modalsubmittype="save">Save changes</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- New background modall--->
+        <div class="modal fade" id="addEditBackgroundModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addEditBackgroundModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addEditBackgroundModalLabel">Modal title</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="backgroundName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="backgroundName" placeholder="Background name">
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-between">
+                        <span>
+                            <button type="button" class="btn btn-danger formmodalsubmit" data-modalsubmittype="delete" aria-label="Delete background"><i class="bi bi-trash"></i></button>
+                        </span>
+                        <span>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary formmodalsubmit" data-modalsubmittype="save">Save changes</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- contact matrix modal--->
+        <div class="modal fade" id="editBackgroundContactMatrixModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editBackgroundContactMatrixModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editBackgroundContactMatrixModalLabel">Background contact matrix</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="editBackgroundContactMatrixModalBody">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary formmodalsubmit" data-modalsubmittype="save">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- infection factors modal--->
+        <div class="modal fade" id="editInfectionFactorsMatrixModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editInfectionFactorsMatrixModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title" id="editInfectionFactorsMatrixModalLabel">Edit infection factors</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <ul class="nav nav-tabs" id="editInfectionFactorsTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="infectious-tab" data-bs-toggle="tab" data-bs-target="#infectious-factors" type="button" role="tab" aria-controls="infectious-factors" aria-selected="true">Infectious factors</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="exposed-tab" data-bs-toggle="tab" data-bs-target="#exposed-factors" type="button" role="tab" aria-controls="exposed-factors" aria-selected="false">Exposed factors</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content modal-body" id="editInfectionFactorsTabContent">
+                        <div class="tab-pane show active" id="infectious-factors" role="tabpanel" aria-labelledby="infectious-tab">...</div>
+                        <div class="tab-pane" id="exposed-factors" role="tabpanel" aria-labelledby="exposed-tab">...</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary formmodalsubmit" data-modalsubmittype="save">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- background transitions modal--->
+        <div class="modal fade" id="editBackgroundTransitionsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editBackgroundTransitionsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title" id="editBackgroundTransitionsModalLabel">Edit background transitions</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <ul class="nav nav-tabs" id="editBackgroundTransitionsTab" role="tablist"></ul>
+                    <template id="editBackgroundTransitionsTabTemplate">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="backgoundTransitionsTab-Inf999" data-bs-toggle="tab" data-bs-target="#backgoundTransitionsTabPane-Inf999" type="button" role="tab" aria-controls="backgoundTransitionsTabPane-Inf999" aria-selected="false"></button>
+                        </li>
+                    </template>
+                    <div class="tab-content modal-body" id="editInfectionFactorsTabContent"></div>
+                    <template id="editBackgroundTransitionsTabPaneTemplate">
+                        <div class="tab-pane" id="backgoundTransitionsTabPane-Inf999" role="tabpanel" aria-labelledby="backgoundTransitionsTab-Inf999">...</div>
+                    </template>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary formmodalsubmit" data-modalsubmittype="save">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- start conditions modal--->
+        <div class="modal fade" id="editStartConditionsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editStartConditionsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editStartConditionsModalLabel">Background contact matrix</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="editStartConditionsModalBody">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary formmodalsubmit" data-modalsubmittype="save">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- JavaScript Bundle with Popper -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/d3@7.0.1/dist/d3.min.js" integrity="sha256-rw249VxIkeE54bKM2Cl2L7BIwIeVYNfFOaJ8it1ODvo=" crossorigin="anonymous"></script>
+        <script type="text/javascript" src="js/matrix.js"></script>
+        <script type="text/javascript" src="js/numberinputtable.js"></script>
+        <script type="text/javascript" src="js/model.js"></script>
+        <script type="text/javascript" src="js/simulation.js"></script>
+        <script type="text/javascript" src="js/plot.js"></script>
+        <script type="text/javascript" src="js/ui.js"></script>
+        <script type="text/javascript">
+            model.addInfectionType({name: 'Inf1', beta: 1.5, gamma: 0.7});
+            //model.addInfectionType({name: 'Inf2', beta: 2, gamma: 0.6});
+            model.addBackground('Bg1');
+            //model.addBackground('Bg2')
+            //model.addBackground('Bg3')
+
+            model.setContactMatrix([1]);
+            model.setInfectiousFactors([1]);
+            model.setExposedFactors([1]);
+            model.setStartCondition([999,1]);
+            model.setBackgroundTransitions(0, [1]);
+        </script>
+    </body>
+</html>
