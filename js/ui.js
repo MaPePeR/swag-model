@@ -9,229 +9,184 @@ var ui = (function () {
 
 
     class FormModal {
-        constructor(element, showFunc, validateFuncs, submitFuncs) {
+        constructor(element) {
             this.element = element;
             this.modal = new bootstrap.Modal(element);
-            this.showFunc = showFunc;
-            this.validateFuncs = validateFuncs;
-            this.submitFuncs = submitFuncs;
             document.addEventListener("DOMContentLoaded", (function () {
                 this.element.addEventListener('show.bs.modal', (function (event) {
-                    this.showFunc.call(this, event);
+                    this.onShow(event);
                 }).bind(this));
                 for (const el of this.element.querySelectorAll('button.formmodalsubmit')) {
                     el.addEventListener('click', (function (button, event) {
                         const submitType = button.dataset.modalsubmittype;
-                        const validateFunc = this.validateFuncs[submitType] || (_ => true);
-                        const submitFunc = this.submitFuncs[submitType];
-                        if (validateFunc.call(this, event)) {
-                            submitFunc.call(this, event);
+                        if (this.validate(submitType, event)) {
+                            this.onSubmit(submitType, event);
                             this.modal.hide();
                         }
                     }).bind(this, el));
                 }
             }).bind(this));
+        }
+        onShow(event) {
+
+        }
+        validate(submitType, event) {
+            return true;
+        }
+        onSubmit(submitType, event) {
 
         }
     }
 
-    new FormModal(document.getElementById('addEditInfectionTypeModal'),  function (event) {
-        let button = event.relatedTarget;
-        this.infectionType = button.getAttribute('data-infection-type');
-        var modalTitle = this.element.querySelector('.modal-title');
+    new class extends FormModal {
+        onShow(event) {
+            let button = event.relatedTarget;
+            this.infectionType = button.getAttribute('data-infection-type');
+            var modalTitle = this.element.querySelector('.modal-title');
 
-        if (this.infectionType == "new") {
-            modalTitle.textContent = 'New infection type';
-            this.element.querySelector('#infectionTypeName').value = '';
-            this.element.querySelector('#infectionTypeBeta').value = '';
-            this.element.querySelector('#infectionTypeGamma').value = '';
-            this.element.querySelector('.formmodalsubmit[data-modalsubmittype="delete"]').classList.add('d-none');
-        } else {
-            this.infectionType = parseInt(this.infectionType, 10);
-            modalTitle.textContent = 'Edit infection type';
-            let infectionType = model.getInfectionType(this.infectionType);
-            this.element.querySelector('#infectionTypeName').value = infectionType.name;
-            this.element.querySelector('#infectionTypeBeta').value = infectionType.beta;
-            this.element.querySelector('#infectionTypeGamma').value = infectionType.gamma;
-            this.element.querySelector('.formmodalsubmit[data-modalsubmittype="delete"]').classList.remove('d-none');
-        }
-    }, {}, {
-        'save': function (event) {
-            let updatedInfectionType = {
-                name: this.element.querySelector('#infectionTypeName').value,
-                beta: this.element.querySelector('#infectionTypeBeta').value,
-                gamma: this.element.querySelector('#infectionTypeGamma').value,
-            };
-            if (this.infectionType === "new") {
-                model.addInfectionType(updatedInfectionType);
+            if (this.infectionType == "new") {
+                modalTitle.textContent = 'New infection type';
+                this.element.querySelector('#infectionTypeName').value = '';
+                this.element.querySelector('#infectionTypeBeta').value = '';
+                this.element.querySelector('#infectionTypeGamma').value = '';
+                this.element.querySelector('.formmodalsubmit[data-modalsubmittype="delete"]').classList.add('d-none');
             } else {
-                model.updateInfectionType(this.infectionType, updatedInfectionType);
+                this.infectionType = parseInt(this.infectionType, 10);
+                modalTitle.textContent = 'Edit infection type';
+                let infectionType = model.getInfectionType(this.infectionType);
+                this.element.querySelector('#infectionTypeName').value = infectionType.name;
+                this.element.querySelector('#infectionTypeBeta').value = infectionType.beta;
+                this.element.querySelector('#infectionTypeGamma').value = infectionType.gamma;
+                this.element.querySelector('.formmodalsubmit[data-modalsubmittype="delete"]').classList.remove('d-none');
             }
-        },
-        'delete': function (event) {
-            if (this.infectionType !== 'new') {
-                model.deleteInfectionType(this.infectionType);
-            }
-        },
-    });
-
-    new FormModal(document.getElementById('addEditBackgroundModal'),  function (event) {
-        var button = event.relatedTarget;
-        this.background = button.getAttribute('data-background-number');
-        var modalTitle = this.element.querySelector('.modal-title');
-
-        if (this.background == "new") {
-            modalTitle.textContent = 'New background';
-            this.element.querySelector('#backgroundName').value = '';
-            this.element.querySelector('.formmodalsubmit[data-modalsubmittype="delete"]').classList.add('d-none');
-        } else {
-            this.background = parseInt(this.background, 10);
-            modalTitle.textContent = 'Edit background';
-            let background = model.getBackground(this.background);
-            this.element.querySelector('#backgroundName').value = background.name;
-            this.element.querySelector('.formmodalsubmit[data-modalsubmittype="delete"]').classList.remove('d-none');
         }
-    }, {}, {
-        save: function (event) {
-            let backgroundName = this.element.querySelector('#backgroundName').value;
-            if (this.background === "new") {
-                model.addBackground(backgroundName);
+        onSubmit(submitType, event) {
+            if (submitType == 'save') {
+                let updatedInfectionType = {
+                    name: this.element.querySelector('#infectionTypeName').value,
+                    beta: this.element.querySelector('#infectionTypeBeta').value,
+                    gamma: this.element.querySelector('#infectionTypeGamma').value,
+                };
+                if (this.infectionType === "new") {
+                    model.addInfectionType(updatedInfectionType);
+                } else {
+                    model.updateInfectionType(this.infectionType, updatedInfectionType);
+                }
+            } else if (submitType == 'delete') {
+                if (this.infectionType !== 'new') {
+                    model.deleteInfectionType(this.infectionType);
+                }
+            }
+        }
+    }(document.getElementById('addEditInfectionTypeModal'));
+
+    new class extends FormModal {
+        onShow(event) {
+            var button = event.relatedTarget;
+            this.background = button.getAttribute('data-background-number');
+            var modalTitle = this.element.querySelector('.modal-title');
+
+            if (this.background == "new") {
+                modalTitle.textContent = 'New background';
+                this.element.querySelector('#backgroundName').value = '';
+                this.element.querySelector('.formmodalsubmit[data-modalsubmittype="delete"]').classList.add('d-none');
             } else {
-                model.updateBackground(this.background, backgroundName);
+                this.background = parseInt(this.background, 10);
+                modalTitle.textContent = 'Edit background';
+                let background = model.getBackground(this.background);
+                this.element.querySelector('#backgroundName').value = background.name;
+                this.element.querySelector('.formmodalsubmit[data-modalsubmittype="delete"]').classList.remove('d-none');
             }
-        },
-        delete: function (event) {
-            if (this.background !== 'new') {
-                model.deleteBackground(this.background);
+        }
+
+        onSubmit(submitType, event) {
+            if (submitType == 'save') {
+                let backgroundName = this.element.querySelector('#backgroundName').value;
+                if (this.background === "new") {
+                    model.addBackground(backgroundName);
+                } else {
+                    model.updateBackground(this.background, backgroundName);
+                }
+            } else if (submitType == 'delete') {
+                if (this.background !== 'new') {
+                    model.deleteBackground(this.background);
+                }
             }
-        },
-    });
-
-    new FormModal(document.getElementById('editBackgroundContactMatrixModal'),  function (event) {
-        this.contactInputTable = this.contactInputTable || new NumberInputTable(
-            document.getElementById('editBackgroundContactMatrixModalBody'),
-            'Infected',
-            'Susceptible'
-        );
-        let backgrounds = model.getBackgroundNames();
-
-        if (backgrounds.length == 0) {
-            document.getElementById('editBackgroundContactMatrixModalBody').innerHTML = 'You need to define backgrounds before you can define the contact factors';
-        } else {
-            this.contactInputTable.setData(backgrounds, backgrounds, model.getContactMatrix());
-
-            this.contactInputTable.redraw();
         }
-    }, {},  {
-        save: function (event) {
-            model.setContactMatrix(this.contactInputTable.getData());
-        },
-    });
+    }(document.getElementById('addEditBackgroundModal'));
 
+    new class extends FormModal {
+        onShow(event) {
+            let backgrounds = model.getBackgroundNames();
+            let infections = model.getInfectionTypes().map(type => type.name);
+            if (backgrounds.length == 0 || infections.length == 0) {
+                return;
+            }
 
-    new FormModal(document.getElementById('editInfectionFactorsMatrixModal'),  function (event) {
-        this.infectiousTable = this.infectionFactorTable || new NumberInputTable(
-            document.getElementById('infectious-factors'),
-            'Background',
-            'Infectious with...'
-        );
-        this.exposedTable = this.exposedTable || new NumberInputTable(
-            document.getElementById('exposed-factors'),
-            'Background',
-            'Being exposed to...'
-        );
-        let backgrounds = model.getBackgroundNames();
-        let infections = model.getInfectionTypes().map(type => type.name);
+            let tabs = document.createDocumentFragment();
+            let tabPanes = document.createDocumentFragment();
 
-        if (backgrounds.length == 0 || infections.length == 0) {
-            this.exposedTable.el.innerHTML = this.infectiousTable.el.innerHTML = 'You need to define backgrounds and infections before you can define the infection factors';
-            return;
+            let tabTemplate = document.getElementById('editBackgroundTransitionsTabTemplate');
+            let tabTemplateButton = tabTemplate.content.querySelector('button');
+            let tabPaneTemplate = document.getElementById('editBackgroundTransitionsTabPaneTemplate');
+            let tabPaneTemplateDiv = tabPaneTemplate.content.querySelector('div');
+
+            this.tables = [];
+
+            const trailingNumber = /\d+$/;
+
+            for (const infectionTypeNumber in infections) {
+                const infectionName = infections[infectionTypeNumber];
+                tabTemplateButton.innerText = infectionName;
+                tabTemplateButton.id = tabTemplateButton.id.replace(trailingNumber, infectionTypeNumber);
+                tabTemplateButton.setAttribute('aria-controls', tabTemplateButton.getAttribute('aria-controls').replace(trailingNumber, '' + infectionTypeNumber));
+                tabTemplateButton.setAttribute('data-bs-target', tabTemplateButton.getAttribute('data-bs-target').replace(trailingNumber, '' + infectionTypeNumber));
+                tabs.appendChild(document.importNode(tabTemplate.content, true));
+
+                tabPaneTemplateDiv.id = tabPaneTemplateDiv.id.replace(trailingNumber, infectionTypeNumber);
+                tabPaneTemplateDiv.setAttribute('aria-labelledby', tabPaneTemplateDiv.getAttribute('aria-labelledby').replace(trailingNumber, '' + infectionTypeNumber));
+                tabPanes.appendChild(document.importNode(tabPaneTemplate.content, true));
+
+                let table = new NumberInputTable(tabPanes.lastElementChild, 'Background before', 'Background after Infection with ' + infectionName);
+                table.setData(backgrounds, backgrounds, model.getBackgroundTransitions(infectionTypeNumber));
+                table.redraw();
+                this.tables.push(table);
+            }
+            tabs.querySelector(':first-child > button').setAttribute('aria-selected', 'true');
+            tabs.querySelector(':first-child > button').classList.add('active');
+            tabPanes.querySelector(':first-child').classList.add('show', 'active');
+
+            this.element.querySelector('#editBackgroundTransitionsTab').replaceChildren(tabs);
+            this.element.querySelector('#editInfectionFactorsTabContent').replaceChildren(tabPanes);
+
         }
-        this.infectiousTable.setData(backgrounds, infections, model.getInfectiousFactors());
-        this.exposedTable.setData(backgrounds, infections, model.getExposedFactors());
-
-        this.infectiousTable.redraw();
-        this.exposedTable.redraw();
-
-    }, {},  {
-        save: function (event) {
-            model.setInfectiousFactors(this.infectiousTable.getData());
-            model.setExposedFactors(this.exposedTable.getData());
-        },
-    });
-
-    new FormModal(document.getElementById('editBackgroundTransitionsModal'),  function (event) {
-        let backgrounds = model.getBackgroundNames();
-        let infections = model.getInfectionTypes().map(type => type.name);
-        if (backgrounds.length == 0 || infections.length == 0) {
-            return;
-        }
-
-        let tabs = document.createDocumentFragment();
-        let tabPanes = document.createDocumentFragment();
-
-        let tabTemplate = document.getElementById('editBackgroundTransitionsTabTemplate');
-        let tabTemplateButton = tabTemplate.content.querySelector('button');
-        let tabPaneTemplate = document.getElementById('editBackgroundTransitionsTabPaneTemplate');
-        let tabPaneTemplateDiv = tabPaneTemplate.content.querySelector('div');
-
-        this.tables = [];
-
-        const trailingNumber = /\d+$/;
-
-        for (const infectionTypeNumber in infections) {
-            const infectionName = infections[infectionTypeNumber];
-            tabTemplateButton.innerText = infectionName;
-            tabTemplateButton.id = tabTemplateButton.id.replace(trailingNumber, infectionTypeNumber);
-            tabTemplateButton.setAttribute('aria-controls', tabTemplateButton.getAttribute('aria-controls').replace(trailingNumber, '' + infectionTypeNumber));
-            tabTemplateButton.setAttribute('data-bs-target', tabTemplateButton.getAttribute('data-bs-target').replace(trailingNumber, '' + infectionTypeNumber));
-            tabs.appendChild(document.importNode(tabTemplate.content, true));
-
-            tabPaneTemplateDiv.id = tabPaneTemplateDiv.id.replace(trailingNumber, infectionTypeNumber);
-            tabPaneTemplateDiv.setAttribute('aria-labelledby', tabPaneTemplateDiv.getAttribute('aria-labelledby').replace(trailingNumber, '' + infectionTypeNumber));
-            tabPanes.appendChild(document.importNode(tabPaneTemplate.content, true));
-
-            let table = new NumberInputTable(tabPanes.lastElementChild, 'Background before', 'Background after Infection with ' + infectionName);
-            table.setData(backgrounds, backgrounds, model.getBackgroundTransitions(infectionTypeNumber));
-            table.redraw();
-            this.tables.push(table);
-        }
-        tabs.querySelector(':first-child > button').setAttribute('aria-selected', 'true');
-        tabs.querySelector(':first-child > button').classList.add('active');
-        tabPanes.querySelector(':first-child').classList.add('show', 'active');
-
-        this.element.querySelector('#editBackgroundTransitionsTab').replaceChildren(tabs);
-        this.element.querySelector('#editInfectionFactorsTabContent').replaceChildren(tabPanes);
-
-    }, {}, {
-        save: function (event) {
+        onSubmit(submitType, event) {
             this.tables.forEach((table, infectionTypeNumber) => {
                 model.setBackgroundTransitions(infectionTypeNumber, table.getData());
             });
-        },
-
-
-    });
-
-    new FormModal(document.getElementById('editStartConditionsModal'),  function (event) {
-        this.table = this.table || new NumberInputTable(document.getElementById('editStartConditionsModalBody'), 'Background', 'People susceptible or infected');
-        let backgrounds = model.getBackgroundNames();
-        let infections = model.getInfectionTypes().map(type => type.name);
-
-        if (backgrounds.length == 0) {
-            this.table.el.innerHTML = 'You need to define backgrounds before you can define the start conditions';
-            return;
         }
+    }(document.getElementById('editBackgroundTransitionsModal'));
 
-        this.table.setData(backgrounds, ['Susceptible'].concat(infections), model.getStartConditon());
+    new class extends FormModal {
+        onShow(event) {
+            this.table = this.table || new NumberInputTable(document.getElementById('editStartConditionsModalBody'), 'Background', 'People susceptible or infected');
+            let backgrounds = model.getBackgroundNames();
+            let infections = model.getInfectionTypes().map(type => type.name);
 
-        this.table.redraw();
+            if (backgrounds.length == 0) {
+                this.table.el.innerHTML = 'You need to define backgrounds before you can define the start conditions';
+                return;
+            }
 
-    }, {},  {
-        save: function (event) {
+            this.table.setData(backgrounds, ['Susceptible'].concat(infections), model.getStartConditon());
+
+            this.table.redraw();
+
+        }
+        onSubmit(submitType, event) {
             model.setStartCondition(this.table.getData());
-        },
-    });
+        }
+    }(document.getElementById('editStartConditionsModal'));
 
     document.addEventListener("DOMContentLoaded", function () {
         document.getElementById('startsimulatonbutton').addEventListener('click', function () {
