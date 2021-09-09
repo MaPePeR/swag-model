@@ -115,50 +115,67 @@ var ui = (function () {
         }
     }(document.getElementById('addEditBackgroundModal'));
 
-    new class extends FormModal {
+    class FormModalWithTabs extends FormModal {
         onShow(event) {
-            let backgrounds = model.getBackgroundNames();
-            let infections = model.getInfectionTypes().map(type => type.name);
-            if (backgrounds.length == 0 || infections.length == 0) {
-                return;
-            }
+            let tabTemplate = this.element.querySelector('.nav-tab-template');
+            let tabTemplateButton = tabTemplate.content.querySelector('button');
+            let tabPaneTemplate = this.element.querySelector('.tab-pane-template');
+            let tabPaneTemplateDiv = tabPaneTemplate.content.querySelector('div');
 
             let tabs = document.createDocumentFragment();
             let tabPanes = document.createDocumentFragment();
 
-            let tabTemplate = document.getElementById('editBackgroundTransitionsTabTemplate');
-            let tabTemplateButton = tabTemplate.content.querySelector('button');
-            let tabPaneTemplate = document.getElementById('editBackgroundTransitionsTabPaneTemplate');
-            let tabPaneTemplateDiv = tabPaneTemplate.content.querySelector('div');
-
-            this.tables = [];
-
             const trailingNumber = /\d+$/;
-
-            for (const infectionTypeNumber in infections) {
-                const infectionName = infections[infectionTypeNumber];
-                tabTemplateButton.innerText = infectionName;
-                tabTemplateButton.id = tabTemplateButton.id.replace(trailingNumber, infectionTypeNumber);
-                tabTemplateButton.setAttribute('aria-controls', tabTemplateButton.getAttribute('aria-controls').replace(trailingNumber, '' + infectionTypeNumber));
-                tabTemplateButton.setAttribute('data-bs-target', tabTemplateButton.getAttribute('data-bs-target').replace(trailingNumber, '' + infectionTypeNumber));
+            const tabTitles = this.getTabs();
+            for (const tabNumber in tabTitles) {
+                const tabTitle = tabTitles[tabNumber];
+                tabTemplateButton.innerText = tabTitle;
+                tabTemplateButton.id = tabTemplateButton.id.replace(trailingNumber, tabNumber);
+                tabTemplateButton.setAttribute('aria-controls', tabTemplateButton.getAttribute('aria-controls').replace(trailingNumber, '' + tabNumber));
+                tabTemplateButton.setAttribute('data-bs-target', tabTemplateButton.getAttribute('data-bs-target').replace(trailingNumber, '' + tabNumber));
                 tabs.appendChild(document.importNode(tabTemplate.content, true));
 
-                tabPaneTemplateDiv.id = tabPaneTemplateDiv.id.replace(trailingNumber, infectionTypeNumber);
-                tabPaneTemplateDiv.setAttribute('aria-labelledby', tabPaneTemplateDiv.getAttribute('aria-labelledby').replace(trailingNumber, '' + infectionTypeNumber));
+                tabPaneTemplateDiv.id = tabPaneTemplateDiv.id.replace(trailingNumber, tabNumber);
+                tabPaneTemplateDiv.setAttribute('aria-labelledby', tabPaneTemplateDiv.getAttribute('aria-labelledby').replace(trailingNumber, '' + tabNumber));
                 tabPanes.appendChild(document.importNode(tabPaneTemplate.content, true));
 
-                let table = new NumberInputTable(tabPanes.lastElementChild, 'Background before', 'Background after Infection with ' + infectionName);
-                table.setData(backgrounds, backgrounds, model.getBackgroundTransitions(infectionTypeNumber));
-                table.redraw();
-                this.tables.push(table);
+                this.fillPane(tabPanes.lastElementChild, tabNumber, tabTitle);
             }
+
             tabs.querySelector(':first-child > button').setAttribute('aria-selected', 'true');
             tabs.querySelector(':first-child > button').classList.add('active');
             tabPanes.querySelector(':first-child').classList.add('show', 'active');
 
-            this.element.querySelector('#editBackgroundTransitionsTab').replaceChildren(tabs);
-            this.element.querySelector('#editInfectionFactorsTabContent').replaceChildren(tabPanes);
+            this.element.querySelector('.nav.nav-tabs').replaceChildren(tabs);
+            this.element.querySelector('.tab-content').replaceChildren(tabPanes);
+        }
 
+        getTabs() {
+            return {};
+        }
+
+        fillPane(paneElement, number, title) {
+        }
+    }
+
+    new class extends FormModalWithTabs {
+        onShow(event) {
+            this.tables = [];
+            FormModalWithTabs.prototype.onShow.call(this, event);
+        }
+        getTabs() {
+            const tabs = {};
+            model.getInfectionTypes().forEach((item, i) => {
+                tabs[item.number] = item.name;
+            });
+            return tabs;
+        }
+        fillPane(paneElement, infectionTypeNumber, title) {
+            let backgrounds = model.getBackgroundNames();
+            let table = new NumberInputTable(paneElement, 'Background before', 'Background after Infection with ' + title);
+            table.setData(backgrounds, backgrounds, model.getBackgroundTransitions(infectionTypeNumber));
+            table.redraw();
+            this.tables.push(table);
         }
         onSubmit(submitType, event) {
             this.tables.forEach((table, infectionTypeNumber) => {
