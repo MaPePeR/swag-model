@@ -1,5 +1,5 @@
 /* eslint-env browser */
-/* global bootstrap */
+/* global bootstrap, d3 */
 /* global model, simulation, NumberInputTable */
 
 'use strict';
@@ -230,6 +230,24 @@ var ui = (function () {
             model.setStartCondition(this.table.getData());
         }
     }(document.getElementById('editStartConditionsModal'));
+
+    new class extends FormModal {
+        onShow(event) {
+            let points = model.getGlobalBetaPoints();
+            const maxx = Math.max(d3.max(points, p => p.x), document.getElementById('timestepnumberinput').value);
+
+            this.element.querySelector('.modal-body').innerHTML = '';
+
+            this.lineplot = new plot.EditableLinePlot(this.element.querySelector('.modal-body'), 800, 400, [0, maxx], [0, 1]);
+            for (const point of points) {
+                this.lineplot.insertPoint(point.x, point.y);
+            }
+
+        }
+        onSubmit(submitType, event) {
+            model.setGlobalBetaPoints(this.lineplot.getData());
+        }
+    }(document.getElementById('editGlobalBetaModal'));
 
     document.addEventListener("DOMContentLoaded", function () {
         document.getElementById('startsimulatonbutton').addEventListener('click', function () {

@@ -15,6 +15,8 @@ var model = (function () {
             this.transitions = [];
 
             this.startConditon = new Matrix(0, 1);
+
+            this.globalBetaPoints = [];
         }
 
         createInfectionType(number, data) {
@@ -151,6 +153,15 @@ var model = (function () {
         }
         getStartConditon() {
             return this.startConditon;
+        }
+
+        getGlobalBetaPoints() {
+            return this.globalBetaPoints.map(d => {
+                return {x: d.x, y: d.y};
+            });
+        }
+        setGlobalBetaPoints(points) {
+            this.globalBetaPoints = points;
         }
     }
 

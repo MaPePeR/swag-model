@@ -37,7 +37,7 @@ var simulation = (function () {
             }
 
             let code = [[
-                `(n, result) => {
+                `(n, result, globalbeta) => {
                     let lastoffset = 0;
                     let nextoffset = `, timestepsize, `;
                     for (let i = 1; i < n; ++i) {\n`],
@@ -48,7 +48,7 @@ var simulation = (function () {
                         return result('next', bgNumberExposed, infectionTypeNumber) + " = " + result('last', bgNumberExposed, -1) +  " * (\n       " + backgrounds.map((_, bgNumberInfectious) => {
                             /* Sum of all infected over all backgrounds */
                             /* Susceptible with background * infected with background * beta * contact/infectious-factor for backgrounds and infection */
-                            return result('last', bgNumberInfectious, infectionTypeNumber) + ' * ' + (beta(infectionTypeNumber) * factor(infectionTypeNumber, bgNumberInfectious, bgNumberExposed));
+                            return result('last', bgNumberInfectious, infectionTypeNumber) + ' * globalbeta[i] * ' + (beta(infectionTypeNumber) * factor(infectionTypeNumber, bgNumberInfectious, bgNumberExposed));
                         }).join(" + ") + "\n    );\n";
                     }), [
                         /* add people that transitioned to this background after any infection */
@@ -80,12 +80,39 @@ var simulation = (function () {
             return eval(code);
         }
 
+        calculateGlobalBeta(n) {
+            let globalbeta = new Float32Array(n);
+            let points = model.getGlobalBetaPoints();
+            if (points.length == 0) {
+                globalbeta.fill(1);
+                return globalbeta;
+            }
+            globalbeta.fill(points[0].y, 0, points[0].x);
+            let lastPoint = points[0];
+            for (let i = 1; i < points.length; i++) {
+                const currentPoint = points[i];
+
+                const m = (currentPoint.y - lastPoint.y) / (currentPoint.x - lastPoint.x);
+                const b = lastPoint.y - m * lastPoint.x;
+                for (let j = lastPoint.x; j < currentPoint.x; j++) {
+                    globalbeta[j] = m * j + b;
+                }
+                globalbeta[currentPoint.x] = currentPoint.y;
+                lastPoint = currentPoint;
+            }
+            globalbeta.fill(lastPoint.y, lastPoint.x);
+            return globalbeta;
+        }
+
         run(n) {
             let f = this.compileStepFunction();
             let start = model.getStartConditon();
             let result = new Float32Array(n * start.nrows * start.ncols);
+
+            const globalbeta = this.calculateGlobalBeta(n);
+
             result.set(start.array);
-            return f(n, result);
+            return f(n, result, globalbeta);
         }
 
     }

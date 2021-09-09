@@ -210,6 +210,21 @@
                     </div>
                 </div>
                 <!-- Define outside influences & events -->
+                <div class="col explanation">
+                    <h3>Global &beta; multiplier</h3>
+                    <p>The global beta multiplier is applied to all infections equally, but can change over time. It can be used to model saisional effects or interventions.</p>
+                </div>
+                <div class="col mb-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between">
+                                <span>Global &beta; multiplier</span>
+                                <button type="button" name="button" class="btn btn-link py-0" aria-label="Edit global beta multiplier" data-bs-toggle="modal" data-bs-target="#editGlobalBetaModal"><i class="bi bi-pencil"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
         <div class="container">
@@ -359,6 +374,24 @@
             </div>
         </div>
 
+        <!-- global beta modal--->
+        <div class="modal fade" id="editGlobalBetaModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editGlobalBetaModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editGlobalBetaModalLabel">Global &beta; multiplier</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary formmodalsubmit" data-modalsubmittype="save">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- JavaScript Bundle with Popper -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/d3@7.0.1/dist/d3.min.js" integrity="sha256-rw249VxIkeE54bKM2Cl2L7BIwIeVYNfFOaJ8it1ODvo=" crossorigin="anonymous"></script>
@@ -378,6 +411,12 @@
             model.setBetaMultipliers(0, [1]);
             model.setStartCondition([999,1]);
             model.setBackgroundTransitions(0, [1]);
+
+            model.setGlobalBetaPoints([
+                {x: 0, y: 1},
+                {x: 100, y: 0.5},
+                {x: 200, y: 0.75},
+            ])
         </script>
     </body>
 </html>
