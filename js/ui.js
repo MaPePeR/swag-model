@@ -172,6 +172,32 @@ var ui = (function () {
         }
         fillPane(paneElement, infectionTypeNumber, title) {
             let backgrounds = model.getBackgroundNames();
+            let table = new NumberInputTable(paneElement, 'Uninfected', 'Exposed to ' + title);
+            table.setData(backgrounds, backgrounds, model.getBetaMultipliers(infectionTypeNumber));
+            table.redraw();
+            this.tables.push(table);
+        }
+        onSubmit(submitType, event) {
+            this.tables.forEach((table, infectionTypeNumber) => {
+                model.setBetaMultipliers(infectionTypeNumber, table.getData());
+            });
+        }
+    }(document.getElementById('editBetaMultiplierModal'));
+
+    new class extends FormModalWithTabs {
+        onShow(event) {
+            this.tables = [];
+            FormModalWithTabs.prototype.onShow.call(this, event);
+        }
+        getTabs() {
+            const tabs = {};
+            model.getInfectionTypes().forEach((item, i) => {
+                tabs[item.number] = item.name;
+            });
+            return tabs;
+        }
+        fillPane(paneElement, infectionTypeNumber, title) {
+            let backgrounds = model.getBackgroundNames();
             let table = new NumberInputTable(paneElement, 'Background before', 'Background after Infection with ' + title);
             table.setData(backgrounds, backgrounds, model.getBackgroundTransitions(infectionTypeNumber));
             table.redraw();

@@ -10,9 +10,7 @@ var model = (function () {
             this.infectionTypes = [];
             this.backgrounds = [];
 
-            this.contact = new Matrix(0, 0);
-            this.infectiousFactors = new Matrix(0, 0);
-            this.exposedFactors = new Matrix(0, 0);
+            this.betaMultipliers = [];
 
             this.transitions = [];
 
@@ -32,9 +30,7 @@ var model = (function () {
             let newInfectionType = this.createInfectionType(this.infectionTypes.length, infectionType);
             this.infectionTypes.push(newInfectionType);
 
-            this.infectiousFactors.addColumn();
-
-            this.exposedFactors.addColumn();
+            this.betaMultipliers.push(new Matrix(this.backgrounds.length, this.backgrounds.length));
 
             this.transitions.push(new Matrix(this.backgrounds.length, this.backgrounds.length));
 
@@ -52,9 +48,7 @@ var model = (function () {
             });
             this.infectionTypes = this.infectionTypes.filter((item, i) => i != infectionTypeNumber);
 
-            this.infectiousFactors.deleteColumn(infectionTypeNumber);
-
-            this.exposedFactors.deleteColumn(infectionTypeNumber);
+            this.betaMultipliers = this.betaMultipliers.filter((item, i) => i != infectionTypeNumber);
 
             this.transitions = this.transitions.filter((item, i) => i != infectionTypeNumber);
 
@@ -81,12 +75,10 @@ var model = (function () {
             let number = this.backgrounds.length;
             this.backgrounds.push({name: backgroundName, number: number});
 
-            this.contact.addColumn();
-            this.contact.addRow();
-
-            this.infectiousFactors.addRow();
-
-            this.exposedFactors.addRow();
+            for (const betaMultiplierMatrix of this.betaMultipliers) {
+                betaMultiplierMatrix.addColumn();
+                betaMultiplierMatrix.addRow();
+            }
 
             for (const transitionMatrix of this.transitions) {
                 transitionMatrix.addColumn();
@@ -111,12 +103,10 @@ var model = (function () {
             });
             this.backgrounds = this.backgrounds.filter((item, i) => i != number);
 
-            this.contact.deleteColumn(number);
-            this.contact.deleteRow(number);
-
-            this.infectiousFactors.deleteRow(number);
-
-            this.exposedFactors.deleteRow(number);
+            for (const betaMultiplierMatrix of this.betaMultipliers) {
+                betaMultiplierMatrix.deleteColumn(number);
+                betaMultiplierMatrix.deleteRow(number);
+            }
 
             for (const transitionMatrix of this.transitions) {
                 transitionMatrix.deleteColumn(number);
@@ -140,26 +130,12 @@ var model = (function () {
             return this.getBackgrounds().map(bg => bg.name);
         }
 
-        setContactMatrix(m) {
-            this.contact.setData(m);
+        getBetaMultipliers(infectionTypeNumber) {
+            return this.betaMultipliers[infectionTypeNumber];
         }
 
-        getContactMatrix() {
-            return this.contact;
-        }
-
-        setInfectiousFactors(m) {
-            this.infectiousFactors.setData(m);
-        }
-        getInfectiousFactors() {
-            return this.infectiousFactors;
-        }
-
-        setExposedFactors(m) {
-            this.exposedFactors.setData(m);
-        }
-        getExposedFactors() {
-            return this.exposedFactors;
+        setBetaMultipliers(infectionTypeNumber, betaMultiplier) {
+            this.betaMultipliers[infectionTypeNumber].setData(betaMultiplier);
         }
 
         setBackgroundTransitions(infectionTypeNumber, transitions) {

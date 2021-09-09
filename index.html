@@ -150,34 +150,23 @@
                         </template>
                     </div>
                 </div>
-                <!-- Define Background-contact matrix -->
+                <!-- Define beta multipliers -->
                 <div class="col explanation">
-                    <h3>Contact rate between backgrounds</h3>
+                    <h3>&beta; multipliers</h3>
+                    <p>Define a multiplier that is applied to the <span class="math"><i>&beta;</i></span> value of an Infection based on the background of the infected and the background of the exposed.</p>
+                    <p>Can be used to simulate different contact rates between backgrounds or make some backgrounds less infectious or less likely to be infected.</p>
                 </div>
                 <div class="col mb-3">
                     <div class="card">
-                        <div class="card-header d-flex justify-content-between">
-                            <span>Background contact matrix</span>
-                            <button type="button" name="button" class="btn btn-link py-0" aria-label="Edit contact factors" data-bs-toggle="modal" data-bs-target="#editBackgroundContactMatrixModal"><i class="bi bi-pencil"></i></button>
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between">
+                                <span>&beta; multipliers</span>
+                                <button type="button" name="button" class="btn btn-link py-0" aria-label="Edit beta multipliers" data-bs-toggle="modal" data-bs-target="#editBetaMultiplierModal"><i class="bi bi-pencil"></i></button>
+                            </div>
                         </div>
                     </div>
-                    <!--<img src="..." class="card-img-bottom" alt="Heatmap showing the background contact matrix"/>-->
+                    <!--<img src="..." class="card-img-bottom" alt="Heatmap showing the beta multipliers"/>-->
                 </div>
-                <!-- Define background infection parameters -->
-                <div class="col explanation">
-                    <h3>Background factors</h3>
-                </div>
-                <div class="col mb-3">
-                    <div class="card">
-                        <div class="card-header d-flex justify-content-between">
-                            <span>Background infectious/exposed factors</span>
-                            <button type="button" name="button" class="btn btn-link py-0" aria-label="Edit infection factors" data-bs-toggle="modal" data-bs-target="#editInfectionFactorsMatrixModal"><i class="bi bi-pencil"></i></button>
-                        </div>
-                    </div>
-                    <!--<img src="..." class="card-img-bottom" alt="Heatmap showing the infecting/infection matrix"/>-->
-                </div>
-
-                <!-- Resulting infection chance??? contact * infection parameters -->
 
                 <!-- Define Background state machine -->
                 <div class="col explanation">
@@ -300,44 +289,24 @@
             </div>
         </div>
 
-        <!-- contact matrix modal--->
-        <div class="modal fade" id="editBackgroundContactMatrixModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editBackgroundContactMatrixModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editBackgroundContactMatrixModalLabel">Background contact matrix</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body" id="editBackgroundContactMatrixModalBody">
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary formmodalsubmit" data-modalsubmittype="save">Save changes</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- infection factors modal--->
-        <div class="modal fade" id="editInfectionFactorsMatrixModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editInfectionFactorsMatrixModalLabel" aria-hidden="true">
+        <!-- beta multiplier modal--->
+        <div class="modal fade" id="editBetaMultiplierModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editBetaMultiplierModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header border-0">
-                        <h5 class="modal-title" id="editInfectionFactorsMatrixModalLabel">Edit infection factors</h5>
+                        <h5 class="modal-title" id="editBetaMultiplierModalLabel">&beta; Multipliers</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <ul class="nav nav-tabs" id="editInfectionFactorsTab" role="tablist">
+                    <ul class="nav nav-tabs" role="tablist"></ul>
+                    <template class="nav-tab-template">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="infectious-tab" data-bs-toggle="tab" data-bs-target="#infectious-factors" type="button" role="tab" aria-controls="infectious-factors" aria-selected="true">Infectious factors</button>
+                            <button class="nav-link" id="betaMultiplierTab-Inf999" data-bs-toggle="tab" data-bs-target="#betaMultiplierTabPane-Inf999" type="button" role="tab" aria-controls="betaMultiplierTabPane-Inf999" aria-selected="false"></button>
                         </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="exposed-tab" data-bs-toggle="tab" data-bs-target="#exposed-factors" type="button" role="tab" aria-controls="exposed-factors" aria-selected="false">Exposed factors</button>
-                        </li>
-                    </ul>
-                    <div class="tab-content modal-body" id="editInfectionFactorsTabContent">
-                        <div class="tab-pane show active" id="infectious-factors" role="tabpanel" aria-labelledby="infectious-tab">...</div>
-                        <div class="tab-pane" id="exposed-factors" role="tabpanel" aria-labelledby="exposed-tab">...</div>
-                    </div>
+                    </template>
+                    <div class="tab-content modal-body" id="editInfectionFactorsTabContent"></div>
+                    <template class="tab-pane-template">
+                        <div class="tab-pane" id="betaMultiplierTabPane-Inf999" role="tabpanel" aria-labelledby="betaMultiplierTab-Inf999">...</div>
+                    </template>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="button" class="btn btn-primary formmodalsubmit" data-modalsubmittype="save">Save changes</button>
@@ -406,9 +375,7 @@
             //model.addBackground('Bg2')
             //model.addBackground('Bg3')
 
-            model.setContactMatrix([1]);
-            model.setInfectiousFactors([1]);
-            model.setExposedFactors([1]);
+            model.setBetaMultipliers(0, [1]);
             model.setStartCondition([999,1]);
             model.setBackgroundTransitions(0, [1]);
         </script>

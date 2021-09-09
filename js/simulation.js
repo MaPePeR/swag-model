@@ -13,9 +13,6 @@ var simulation = (function () {
             const ninf = infections.length;
             const nbackground = backgrounds.length;
             const timestepsize = (ninf + 1) * nbackground;
-            const contact = model.getContactMatrix();
-            const infectiousFactors = model.getInfectiousFactors();
-            const exposedFactors = model.getExposedFactors();
 
             const N = model.getStartConditon().array.reduce((a, b) => a + b);
 
@@ -32,7 +29,7 @@ var simulation = (function () {
             }
 
             function factor(infNumber, infBackground, expBackground) {
-                return infectiousFactors.get(infBackground, infNumber) * exposedFactors.get(expBackground, infNumber) * contact.get(infBackground, expBackground) / N;
+                return model.getBetaMultipliers(infNumber).get(expBackground, infBackground) / N;
             }
 
             function transition(infNumber, oldBackground, newBackground) {
