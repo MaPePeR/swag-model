@@ -29,6 +29,7 @@ var plot = (function () {
                     var coords = d3.pointer(event);
                     this.insertPoint(this.x.invert(coords[0] - margin.left), this.y.invert(coords[1] - margin.top));
                 })
+                .attr('class', 'editablelineplot')
                 .attr('width', width + margin.left + margin.right)
                 .attr('height', height + margin.bottom + margin.top)
                 .attr('viewBox', [0, 0, width + margin.left + margin.right, height + margin.bottom + margin.top])
