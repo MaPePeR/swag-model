@@ -234,7 +234,7 @@ var ui = (function () {
     new class extends FormModal {
         onShow(event) {
             let points = model.getGlobalBetaPoints();
-            const maxx = Math.max(d3.max(points, p => p.x), document.getElementById('timestepnumberinput').value);
+            const maxx = d3.max([d3.max(points, p => p.x), document.getElementById('timestepnumberinput').value]);
 
             this.element.querySelector('.modal-body').innerHTML = '';
 
