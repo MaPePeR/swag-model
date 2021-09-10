@@ -174,6 +174,7 @@ var plot = (function () {
             document.getElementById('plot1').innerHTML = '';
             this.plotArea(data);
             this.plotLines(data);
+            this.plotLinesCombinedBackgrounds(data);
         }
         plotArea(data) {
             const infections = model.getInfectionTypes();
@@ -261,6 +262,53 @@ var plot = (function () {
                     .attr("d", series => (d3.line()
                             .x(d => x(d))
                             .y(d => y(data[d * timestepsize + series]))(xvalues))
+                    );
+        }
+
+        plotLinesCombinedBackgrounds(data) {
+            const infections = model.getInfectionTypes();
+            const backgrounds = model.getBackgrounds();
+
+            const timestepsize =  (infections.length + 1) * backgrounds.length;
+            const timesteps = data.length / timestepsize;
+
+            const svg = this.makeSVG('#plot1');
+
+            const max = d3.max(data);
+
+            const x = this.makeXaxis(svg, [0, timesteps]);
+            const y = this.makeYaxis(svg, [0, max]);
+
+            const keys = d3.range(infections.length + 1);
+
+            // color palette
+            const color = d3.scaleOrdinal()
+                .domain(keys)
+                .range(d3.schemeCategory10);
+
+            const xvalues = d3.range(timesteps);
+
+            const n_groups = infections.length + 1;
+
+            const sums = new Float32Array(n_groups * timesteps);
+            for (let i = 0; i < timesteps; i++) {
+                for (let infection = 0; infection < infections.length + 1; infection++) {
+                    for (let bg = 0; bg < backgrounds.length; bg++) {
+                        sums[i * n_groups + infection] += data[i * timestepsize + bg * n_groups + infection];
+                    }
+                }
+            }
+
+            svg.append('g')
+                .selectAll("path")
+                .data(keys)
+                .join('path')
+                    .attr("fill", "none")
+                    .attr("stroke-width", 1)
+                    .attr("stroke", d => color(d))
+                    .attr("d", series => (d3.line()
+                            .x(d => x(d))
+                            .y(d => y(sums[d * n_groups + series]))(xvalues))
                     );
         }
 
