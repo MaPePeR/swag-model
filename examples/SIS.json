@@ -1,0 +1,11 @@
+{
+    "name": "SIS model",
+    "description": "A simple SIS model example",
+    "infectionTypes": "Only one infection with β=0.5 and γ=0.1 is defined.",
+    "backgrounds": "Only a single background is needed.",
+    "betaMultipliers": "The single multiplier is set to 1.0",
+    "transitions": "Because there is only one background and one infection no transitions can occur.",
+    "startConditon": "We start with 499 susceptible and 1 infected people.",
+    "globalBetaMultiplier": "No global beta multiplier is used.",
+    "model": "*2Q*1E/*1PczMzQ*1E/g*0P4*0EP5gAA/g*9Dw*1T*1SQ*0G4*0Bm*1ZQ*0GM*0B0*1ZQ*0GQ*6Qg*0GE*0Bj*1aw*0Gc*0By*1bw*0HU*0Bu*1ZA=="
+}

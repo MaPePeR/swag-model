@@ -81,16 +81,14 @@
                                 <button class="btn btn-link py-0"><i class="bi bi-save"></i></button>
                             </span>
                         </div>
-                        <div class="list-group list-group-flush">
-                            <div class="list-group-item d-flex justify-content-between align-items-baseline">
-                                <span>SIS</span>
-                                <button class="btn btn-primary btn-sm">Load</span>
-                            </div>
-                            <div class="list-group-item d-flex justify-content-between align-items-baseline">
-                                <span>SIRD</span>
-                                <button class="btn btn-primary btn-sm">Load</span>
-                            </div>
+                        <div class="list-group list-group-flush" id="libraryListGroup">
                         </div>
+                        <template id="globalLibraryEntryTemplate">
+                            <div class="list-group-item d-flex justify-content-between align-items-baseline">
+                                <span class="libraryentryname"></span>
+                                <button class="btn btn-primary btn-sm" aria-label="Load ..." data-bs-toggle="modal" data-bs-target="#loadModelModal" data-global-library-path="">Load</button>
+                            </div>
+                        </template>
                     </div>
                 </div>
                 <div class="col explanation">
@@ -415,12 +413,48 @@
             </div>
         </div>
 
+        <!-- load model modal -->
+        <div class="modal fade" id="loadModelModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="loadModelModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="loadModelModalLabel">SIS model</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                    </div>
+                    <template id="modelDescriptionTemplate">
+                        <h6>Description</h6>
+                        <p class="modeldescription"></p>
+                        <h6>Infection types</h6>
+                        <p class="modelinfections"></p>
+                        <h6>Backgrounds</h6>
+                        <p class="backgrounds"></p>
+                        <h6>&beta; multipliers</h6>
+                        <p class="betaMultipliers"></p>
+                        <h6>Transitions</h6>
+                        <p class="transitions"></p>
+                        <h6>Start condition</h6>
+                        <p class="startConditon"></p>
+                        <h6>Global &beta; multiplier</h6>
+                        <p class="globalBetaMultiplier"></p>
+                    </template>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary formmodalsubmit" data-modalsubmittype="load">Load</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- JavaScript Bundle with Popper -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/d3@7.0.1/dist/d3.min.js" integrity="sha256-rw249VxIkeE54bKM2Cl2L7BIwIeVYNfFOaJ8it1ODvo=" crossorigin="anonymous"></script>
         <script type="text/javascript" src="js/matrix.js"></script>
         <script type="text/javascript" src="js/numberinputtable.js"></script>
         <script type="text/javascript" src="js/model.js"></script>
+        <script type="text/javascript" src="js/library.js"></script>
         <script type="text/javascript" src="js/simulation.js"></script>
         <script type="text/javascript" src="js/plot.js"></script>
         <script type="text/javascript" src="js/ui.js"></script>

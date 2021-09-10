@@ -1,6 +1,6 @@
 /* eslint-env browser */
 /* global bootstrap, d3 */
-/* global model, simulation, NumberInputTable */
+/* global model, simulation, library, NumberInputTable */
 
 'use strict';
 
@@ -249,6 +249,53 @@ var ui = (function () {
         }
     }(document.getElementById('editGlobalBetaModal'));
 
+    //FROM https://stackoverflow.com/a/35970894/2256700
+    const getJSON = function(url, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.responseType = 'json';
+        xhr.onload = function() {
+            var status = xhr.status;
+            if (status === 200) {
+                callback(null, xhr.response);
+            } else {
+                callback(status, xhr.response);
+            }
+        };
+        xhr.send();
+    };
+
+    new class extends FormModal {
+        onShow(event) {
+            var button = event.relatedTarget;
+            this.path = button.getAttribute('data-global-library-path');
+            getJSON(this.path, function (err, data) {
+                if (err) {
+                    alert("Could not load data");
+                    return;
+                }
+                this.libraryentry = data;
+                this.showEntry();
+            }.bind(this));
+        }
+        showEntry() {
+            const t = document.getElementById('modelDescriptionTemplate');
+            this.element.querySelector('.modal-title').innerText = this.libraryentry.name;
+            t.content.querySelector('.modeldescription').innerText = this.libraryentry.description;
+            t.content.querySelector('.modelinfections').innerText = this.libraryentry.infectionTypes;
+            t.content.querySelector('.backgrounds').innerText = this.libraryentry.backgrounds;
+            t.content.querySelector('.betaMultipliers').innerText = this.libraryentry.betaMultipliers;
+            t.content.querySelector('.transitions').innerText = this.libraryentry.transitions;
+            t.content.querySelector('.startConditon').innerText = this.libraryentry.startConditon;
+            t.content.querySelector('.globalBetaMultiplier').innerText = this.libraryentry.globalBetaMultiplier;
+
+            this.element.querySelector('.modal-body').replaceChildren(document.importNode(t.content, true));
+        }
+        onSubmit() {
+            model.deserializeB64(model.decompressB64(this.libraryentry.model));
+        }
+    }(document.getElementById('loadModelModal'));
+
     new class extends FormModal {
         onShow(event) {
             model.serialize().then((base64) => {
@@ -270,6 +317,7 @@ var ui = (function () {
             /* global plot */
             plot.plot(result);
         });
+        ui.updateLibraryList();
     });
 
 
@@ -332,6 +380,23 @@ var ui = (function () {
             if (el.value != timesteps) {
                 el.value = timesteps;
             }
+        },
+        updateLibraryList: function() {
+            const fragment = document.createDocumentFragment();
+            const globalTemplate = document.getElementById('globalLibraryEntryTemplate');
+            const globalTemplateName = globalTemplate.content.querySelector('.libraryentryname');
+            const globalTemplateLoadButton = globalTemplate.content.querySelector('button');
+            const globalLibrary = library.getGlobalLibrary();
+            for (const entryname in globalLibrary) {
+                const entrypath = globalLibrary[entryname];
+                globalTemplateName.innerText = entryname;
+
+                globalTemplateLoadButton.setAttribute('aria-label', "Load " + entryname);
+                globalTemplateLoadButton.dataset.globalLibraryPath = entrypath;
+                fragment.appendChild(document.importNode(globalTemplate.content, true));
+            }
+
+            document.getElementById('libraryListGroup').replaceChildren(fragment);
         },
     };
 })();

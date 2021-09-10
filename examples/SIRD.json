@@ -1,0 +1,11 @@
+{
+    "name": "SIRD model",
+    "description": "A simple SIRD model example",
+    "infectionTypes": "Only one infection with β=0.4 and γ=0.04 is defined.",
+    "backgrounds": "There are three backgrounds. One for the Susceptible, one for Recovered and one for Deceised.",
+    "betaMultipliers": "The beta multipliers are set up in a way, that only the susceptible can infect and be infected.",
+    "transitions": "After infection the susceptible are split 87.5% to Recovered and 12.5% to Deceised. This coresponds to γ = 0.04 · 0.875 = 0.35 and μ = 0.04 · 0.125 = 0.05 in traditional SIRD.",
+    "startConditon": "We start with 997 susceptible and 3 infected people.",
+    "globalBetaMultiplier": "No global beta multiplier is used.",
+    "model": "*2Q*1E+zMzNPSPXCg*1M/g*Z*AP2*0D4*6P4*GD+*0BEeUAAQE*VZ*1Cc*0BJ*1bg*0GY*0Bl*1Yw*0HQ*0Bl*1Z*6BT*1dQ*0HM*0Bj*1ZQ*0H*1B0*1aQ*0GI*0Bs*1ZQ*5BS*1ZQ*0GM*0Bv*1dg*0GU*0By*1ZQ*0GQ*6R*1GU*0Bj*1ZQ*0GE*0Bz*1ZQ*0GQ="
+}
