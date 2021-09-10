@@ -23,6 +23,12 @@ var model = (function () {
         }
 
         serialize() {
+            function copyFloat32ArrayToView(view, offset, n, array) {
+                for (let i = 0; i < n; ++i) {
+                    view.setFloat32(4 * (offset + i), array[i]);
+                }
+            }
+
             const combinedNames = [].concat(
                 this.infectionTypes.map(i => i.name),
                 this.backgrounds.map(i => i.name)
@@ -43,35 +49,34 @@ var model = (function () {
                 4 +                    // Number of 4 Byte chars for 0 separated Names
                 combinedNames.length * 4;
             const buffer = new ArrayBuffer(datasize);
-            const int32view = new Int32Array(buffer);
-            const float32view = new Float32Array(buffer);
+            const view = new DataView(buffer);
             let offset = 0;
 
-            int32view[offset++] = 1;
-            int32view[offset++] = N_I;
+            view.setInt32(4 * offset++, 1);
+            view.setInt32(4 * offset++, N_I);
             for (const infection of this.infectionTypes) {
-                float32view[offset++] = infection.beta;
-                float32view[offset++] = infection.gamma;
+                view.setFloat32(4 * offset++, infection.beta);
+                view.setFloat32(4 * offset++, infection.gamma);
             }
-            int32view[offset++] = N_B;
+            view.setInt32(4 * offset++, N_B);
             for (const infectionTypeNumber in this.infectionTypes) {
-                float32view.set(this.betaMultipliers[infectionTypeNumber].array, offset);
+                copyFloat32ArrayToView(view, offset, N_B * N_B, this.betaMultipliers[infectionTypeNumber].array);
                 offset += N_B * N_B;
             }
             for (const infectionTypeNumber in this.infectionTypes) {
-                float32view.set(this.transitions[infectionTypeNumber].array, offset);
+                copyFloat32ArrayToView(view, offset, N_B * N_B, this.transitions[infectionTypeNumber].array);
                 offset += N_B * N_B;
             }
-            float32view.set(this.startConditon.array, offset);
+            copyFloat32ArrayToView(view, offset, ((N_I + 1) * N_B), this.startConditon.array);
             offset += ((N_I + 1) * N_B);
-            int32view[offset++] = N_GBP;
+            view.setInt32(4 * offset++, N_GBP);
             for (var globalBetaPoint of this.globalBetaPoints) {
-                int32view[offset++] = globalBetaPoint.x;
-                float32view[offset++] = globalBetaPoint.y;
+                view.setInt32(4 * offset++, globalBetaPoint.x);
+                view.setFloat32(4 * offset++, globalBetaPoint.y);
             }
-            int32view[offset++] = combinedNames.length;
+            view.setInt32(4 * offset++, combinedNames.length);
             for (let i = 0; i < combinedNames.length; ++i) {
-                int32view[offset++] = combinedNames.codePointAt(i);
+                view.setInt32(4 * offset++, combinedNames.codePointAt(i));
             }
 
             if (offset * 4 !== datasize) {
@@ -101,24 +106,29 @@ var model = (function () {
         }
 
         deserializeBuffer(buffer) {
-            const int32view = new Int32Array(buffer);
-            const float32view = new Float32Array(buffer);
+            function copyViewToFloat32Array(array, view, offset, n) {
+                for (let i = 0; i < n; ++i) {
+                    array[i] = view.getFloat32(4 * (offset + i));
+                }
+            }
+
+            const view = new DataView(buffer);
             let offset = 0;
 
-            const version = int32view[offset++];
+            const version = view.getInt32(4 * offset++);
             if (version != 1) {
                 throw "Unknown version";
             }
-            const N_I = int32view[offset++];
+            const N_I = view.getInt32(4 * offset++);
             this.infectionTypes = [];
             for (let i = 0; i < N_I; ++i) {
                 this.infectionTypes.push({
                     number: i,
-                    beta: float32view[offset++],
-                    gamma: float32view[offset++],
+                    beta: view.getFloat32(4 * offset++),
+                    gamma: view.getFloat32(4 * offset++),
                 });
             }
-            const N_B = int32view[offset++];
+            const N_B = view.getInt32(4 * offset++);
             this.backgrounds = [];
             for (let i = 0; i < N_B; ++i) {
                 this.backgrounds.push({number: i});
@@ -126,32 +136,32 @@ var model = (function () {
             this.betaMultipliers = [];
             for (const _ in this.infectionTypes) {
                 const m = new Matrix(N_B, N_B);
-                m.array.set(float32view.subarray(offset, offset + N_B * N_B));
-                this.betaMultipliers.push(m);
+                copyViewToFloat32Array(m.array, view, offset, N_B * N_B);
                 offset += N_B * N_B;
+                this.betaMultipliers.push(m);
             }
             this.transitions = [];
             for (const _ in this.infectionTypes) {
                 const m = new Matrix(N_B, N_B);
-                m.array.set(float32view.subarray(offset, offset + N_B * N_B));
-                this.transitions.push(m);
+                copyViewToFloat32Array(m.array, view, offset, N_B * N_B);
                 offset += N_B * N_B;
+                this.transitions.push(m);
             }
             this.startConditon = new Matrix(N_B, N_I + 1);
-            this.startConditon.array.set(float32view.subarray(offset, offset + (N_I + 1) * N_B));
+            copyViewToFloat32Array(this.startConditon.array, view, offset,  (N_I + 1) * N_B);
             offset += ((N_I + 1) * N_B);
-            const N_GBP = int32view[offset++];
+            const N_GBP = view.getInt32(4 * offset++);
             this.globalBetaPoints = [];
             for (let i = 0; i < N_GBP; ++i) {
                 this.globalBetaPoints.push({
-                    x: int32view[offset++],
-                    y: float32view[offset++],
+                    x: view.getInt32(4 * offset++),
+                    y: view.getFloat32(4 * offset++),
                 });
             }
-            const N_names = int32view[offset++];
+            const N_names = view.getInt32(4 * offset++);
             let names = [];
             for (let i = 0; i < N_names; i++) {
-                names.push(String.fromCodePoint(int32view[offset++]));
+                names.push(String.fromCodePoint(view.getInt32(4 * offset++)));
             }
             names = names.join('').split("\0");
             let i = 0;
