@@ -119,6 +119,7 @@
                                 <td class="infection-type-name">Alpha</td>
                                 <td class="math"><i>&beta;</i> = <span class="infection-type-beta">2.4</span></td>
                                 <td class="math"><i>&gamma;</i> = <span class="infection-type-gamma">1.4</span></td>
+                                <td class="math"><i>R<sub>0</sub></i> = <span class="infection-type-r0">1.4</span></td>
                                 <td class="text-end">
                                     <button type="button" name="button" class="btn btn-link py-0 infection-type-edit-button" aria-label="Edit infection type" data-bs-toggle="modal" data-bs-target="#addEditInfectionTypeModal" data-infection-type="1"><i class="bi bi-pencil"></i></button>
                                     <span class="reorder">
@@ -274,6 +275,10 @@
                         <div class="mb-3">
                             <label for="infectionTypeGamma" class="form-label">&gamma;</label>
                             <input type="number" class="form-control" id="infectionTypeGamma">
+                        </div>
+                        <div class="mb-3">
+                            <label for="infectionTypeR0" class="form-label">R<sub>0</sub></label>
+                            <input type="number" class="form-control" id="infectionTypeR0" readonly>
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-between">

@@ -38,6 +38,16 @@ var ui = (function () {
         }
     }
 
+    function updateR0() {
+        const beta =  document.getElementById('infectionTypeBeta').value;
+        const gamma = document.getElementById('infectionTypeGamma').value;
+        if (beta > 0 && gamma > 0) {
+            document.getElementById('infectionTypeR0').value = beta / gamma;
+        } else {
+            document.getElementById('infectionTypeR0').value = '';
+        }
+    }
+
     new class extends FormModal {
         onShow(event) {
             let button = event.relatedTarget;
@@ -59,6 +69,7 @@ var ui = (function () {
                 this.element.querySelector('#infectionTypeGamma').value = infectionType.gamma;
                 this.element.querySelector('.formmodalsubmit[data-modalsubmittype="delete"]').classList.remove('d-none');
             }
+            updateR0();
         }
         onSubmit(submitType, event) {
             if (submitType == 'save') {
@@ -327,6 +338,8 @@ var ui = (function () {
                 model.deserializeB64(model.decompressB64(library.getLocalLibraryEntry(button.dataset.localLibraryEntryKey)));
             }
         });
+
+        document.getElementById('addEditInfectionTypeModal').addEventListener('input', updateR0);
         document.getElementById('timestepnumberinput').addEventListener('change', function () {
             model.setTimesteps(document.getElementById('timestepnumberinput').value);
         });
@@ -346,6 +359,7 @@ var ui = (function () {
         let name = t.content.querySelector('.infection-type-name');
         let beta = t.content.querySelector('.infection-type-beta');
         let gamma = t.content.querySelector('.infection-type-gamma');
+        let r0 = t.content.querySelector('.infection-type-r0');
         let editButton = t.content.querySelector('.infection-type-edit-button');
 
         let infectionTypes = model.getInfectionTypes();
@@ -359,6 +373,7 @@ var ui = (function () {
                 name.innerText = infectionType.name;
                 beta.innerText = infectionType.beta;
                 gamma.innerText = infectionType.gamma;
+                r0.innerText = (infectionType.beta / infectionType.gamma).toFixed(2);
                 editButton.dataset.infectionType = infectionType.number;
                 fragment.appendChild(document.importNode(t.content, true));
             });
