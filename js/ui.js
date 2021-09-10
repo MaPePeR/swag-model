@@ -249,6 +249,16 @@ var ui = (function () {
         }
     }(document.getElementById('editGlobalBetaModal'));
 
+    new class extends FormModal {
+        onShow(event) {
+            model.serialize().then((base64) => {
+                const textarea = this.element.querySelector('.modal-body textarea');
+                const url = window.location.protocol + '//' + window.location.host + window.location.pathname + "#model:" + base64;
+                textarea.value = url;
+            });
+        }
+    }(document.getElementById('shareModelModal'));
+
     document.addEventListener("DOMContentLoaded", function () {
         document.getElementById('startsimulatonbutton').addEventListener('click', function () {
             const N = document.getElementById('timestepnumberinput').value;

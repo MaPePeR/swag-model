@@ -77,8 +77,8 @@
                         <div class="card-header d-flex justify-content-between">
                             <span>Models</span>
                             <span>
-                                <button class="btn btn-link p-0"><i class="bi bi-share"></i></button>
-                                <button class="btn btn-link p-0"><i class="bi bi-save"></i></button>
+                                <button class="btn btn-link py-0" aria-label="Get share link for model" data-bs-toggle="modal" data-bs-target="#shareModelModal"><i class="bi bi-share"></i></button>
+                                <button class="btn btn-link py-0"><i class="bi bi-save"></i></button>
                             </span>
                         </div>
                         <div class="list-group list-group-flush">
@@ -397,6 +397,24 @@
             </div>
         </div>
 
+        <!-- share model modal -->
+        <div class="modal fade" id="shareModelModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="shareModelModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="shareModelModalLabel">Share model</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <textarea class="form-control" readonly></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- JavaScript Bundle with Popper -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/d3@7.0.1/dist/d3.min.js" integrity="sha256-rw249VxIkeE54bKM2Cl2L7BIwIeVYNfFOaJ8it1ODvo=" crossorigin="anonymous"></script>
@@ -407,21 +425,35 @@
         <script type="text/javascript" src="js/plot.js"></script>
         <script type="text/javascript" src="js/ui.js"></script>
         <script type="text/javascript">
-            model.addInfectionType({name: 'Inf1', beta: 1.5, gamma: 0.7});
-            //model.addInfectionType({name: 'Inf2', beta: 2, gamma: 0.6});
-            model.addBackground('Bg1');
-            //model.addBackground('Bg2')
-            //model.addBackground('Bg3')
+            function loadFromHash() {
+                if(window.location.hash && window.location.hash.substr(0, 7) == "#model:") {
+                    console.log('loading from hash')
+                    model.deserializeB64(window.location.hash.substr(7));
+                    window.location.hash = '';
+                    return true;
+                }
+                return false;
+            }
+            window.addEventListener("hashchange", function () {
+                loadFromHash();
+            }, false);
+            if(!loadFromHash()) {
+                model.addInfectionType({name: 'Inf1', beta: 1.5, gamma: 0.7});
+                //model.addInfectionType({name: 'Inf2', beta: 2, gamma: 0.6});
+                model.addBackground('Bg1');
+                //model.addBackground('Bg2')
+                //model.addBackground('Bg3')
 
-            model.setBetaMultipliers(0, [1]);
-            model.setStartCondition([999,1]);
-            model.setBackgroundTransitions(0, [1]);
+                model.setBetaMultipliers(0, [1]);
+                model.setStartCondition([999,1]);
+                model.setBackgroundTransitions(0, [1]);
 
-            model.setGlobalBetaPoints([
-                {x: 0, y: 1},
-                {x: 100, y: 0.5},
-                {x: 200, y: 0.75},
-            ])
+                model.setGlobalBetaPoints([
+                    {x: 0, y: 1},
+                    {x: 100, y: 0.5},
+                    {x: 200, y: 0.75},
+                ])
+            }
         </script>
     </body>
 </html>
