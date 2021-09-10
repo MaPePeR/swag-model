@@ -110,11 +110,16 @@ var model = (function () {
         }
 
         deserializeBuffer(buffer) {
+            function f2d(f) {
+                return parseFloat(f.toFixed(6));
+            }
+
             function copyViewToFloat32Array(array, view, offset, n) {
                 for (let i = 0; i < n; ++i) {
-                    array[i] = view.getFloat32(4 * (offset + i));
+                    array[i] = f2d(view.getFloat32(4 * (offset + i)));
                 }
             }
+
 
             const view = new DataView(buffer);
             let offset = 0;
@@ -128,8 +133,8 @@ var model = (function () {
             for (let i = 0; i < N_I; ++i) {
                 this.infectionTypes.push({
                     number: i,
-                    beta: view.getFloat32(4 * offset++),
-                    gamma: view.getFloat32(4 * offset++),
+                    beta: f2d(view.getFloat32(4 * offset++)),
+                    gamma: f2d(view.getFloat32(4 * offset++)),
                 });
             }
             const N_B = view.getInt32(4 * offset++);
