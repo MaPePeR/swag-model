@@ -20,6 +20,8 @@ var model = (function () {
             this.startConditon = new Matrix(0, 1);
 
             this.globalBetaPoints = [];
+
+            this.timesteps = 200;
         }
 
         serialize() {
@@ -46,6 +48,7 @@ var model = (function () {
                 4 * (N_I + 1) * N_B +  // Start condition
                 4 +                    // Number of GlobalbetaPoints (N_GBP)
                 N_GBP * (4 + 4) +      // Global Beta Points x, y
+                4 +                    // Number of timesteps
                 4 +                    // Number of 4 Byte chars for 0 separated Names
                 combinedNames.length * 4;
             const buffer = new ArrayBuffer(datasize);
@@ -74,6 +77,7 @@ var model = (function () {
                 view.setInt32(4 * offset++, globalBetaPoint.x);
                 view.setFloat32(4 * offset++, globalBetaPoint.y);
             }
+            view.setInt32(4 * offset++, this.timesteps);
             view.setInt32(4 * offset++, combinedNames.length);
             for (let i = 0; i < combinedNames.length; ++i) {
                 view.setInt32(4 * offset++, combinedNames.codePointAt(i));
@@ -158,6 +162,7 @@ var model = (function () {
                     y: view.getFloat32(4 * offset++),
                 });
             }
+            this.timesteps = view.getInt32(4 * offset++);
             const N_names = view.getInt32(4 * offset++);
             let names = [];
             for (let i = 0; i < N_names; i++) {
@@ -174,6 +179,7 @@ var model = (function () {
 
             ui.recreateInfectionTypeTable();
             ui.recreateBackgroundTable();
+            ui.updateTimesteps();
         }
 
         compressB64(b64text) {
@@ -333,6 +339,13 @@ var model = (function () {
         }
         setGlobalBetaPoints(points) {
             this.globalBetaPoints = points;
+        }
+
+        setTimesteps(n) {
+            this.timesteps = Math.round(n);
+        }
+        getTimesteps() {
+            return this.timesteps;
         }
     }
 

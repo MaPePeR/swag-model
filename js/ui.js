@@ -234,7 +234,7 @@ var ui = (function () {
     new class extends FormModal {
         onShow(event) {
             let points = model.getGlobalBetaPoints();
-            const maxx = d3.max([d3.max(points, p => p.x), document.getElementById('timestepnumberinput').value]);
+            const maxx = d3.max([d3.max(points, p => p.x), model.getTimesteps()]);
 
             this.element.querySelector('.modal-body').innerHTML = '';
 
@@ -261,8 +261,11 @@ var ui = (function () {
     }(document.getElementById('shareModelModal'));
 
     document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById('timestepnumberinput').addEventListener('change', function () {
+            model.setTimesteps(document.getElementById('timestepnumberinput').value);
+        });
         document.getElementById('startsimulatonbutton').addEventListener('click', function () {
-            const N = document.getElementById('timestepnumberinput').value;
+            const N = model.getTimesteps();
             let result = simulation.run(N);
             /* global plot */
             plot.plot(result);
@@ -323,5 +326,12 @@ var ui = (function () {
     return {
         recreateInfectionTypeTable: recreateInfectionTypeTable,
         recreateBackgroundTable: recreateBackgroundTable,
+        updateTimesteps: function() {
+            const el = document.getElementById('timestepnumberinput');
+            const timesteps = model.getTimesteps();
+            if (el.value != timesteps) {
+                el.value = timesteps;
+            }
+        },
     };
 })();
