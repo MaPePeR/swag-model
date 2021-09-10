@@ -5,6 +5,9 @@
 
 /* exported model */
 var model = (function () {
+    const compressChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+
     class Model {
         constructor() {
             this.infectionTypes = [];
@@ -161,6 +164,19 @@ var model = (function () {
 
             ui.recreateInfectionTypeTable();
             ui.recreateBackgroundTable();
+        }
+
+        compressB64(b64text) {
+            const regex = new RegExp('A{3,' + (compressChars.length + 2) + '}', 'g');
+            return b64text.replace(regex, function (repetition) {
+                return "*" + compressChars[repetition.length - 3];
+            });
+        }
+        decompressB64(compressed) {
+            const regex = new RegExp('\\*[' + compressChars + ']', 'g');
+            return compressed.replace(regex, function (repetition) {
+                return "A".repeat(3 + compressChars.indexOf(repetition[1]));
+            });
         }
 
 

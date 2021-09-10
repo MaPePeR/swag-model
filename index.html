@@ -428,7 +428,7 @@
             function loadFromHash() {
                 if(window.location.hash && window.location.hash.substr(0, 7) == "#model:") {
                     console.log('loading from hash')
-                    model.deserializeB64(window.location.hash.substr(7));
+                    model.deserializeB64(model.decompressB64(window.location.hash.substr(7)));
                     window.location.hash = '';
                     return true;
                 }

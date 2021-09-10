@@ -253,7 +253,8 @@ var ui = (function () {
         onShow(event) {
             model.serialize().then((base64) => {
                 const textarea = this.element.querySelector('.modal-body textarea');
-                const url = window.location.protocol + '//' + window.location.host + window.location.pathname + "#model:" + base64;
+                const compressed = model.compressB64(base64);
+                const url = window.location.protocol + '//' + window.location.host + window.location.pathname + "#model:" + compressed;
                 textarea.value = url;
             });
         }
