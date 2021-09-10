@@ -78,15 +78,24 @@
                             <span>Models</span>
                             <span>
                                 <button class="btn btn-link py-0" aria-label="Get share link for model" data-bs-toggle="modal" data-bs-target="#shareModelModal"><i class="bi bi-share"></i></button>
-                                <button class="btn btn-link py-0"><i class="bi bi-save"></i></button>
+                                <button class="btn btn-link py-0" aria-label="Save current model" data-bs-toggle="modal" data-bs-target="#saveModelModal"><i class="bi bi-save"></i></button>
                             </span>
                         </div>
                         <div class="list-group list-group-flush" id="libraryListGroup">
                         </div>
                         <template id="globalLibraryEntryTemplate">
                             <div class="list-group-item d-flex justify-content-between align-items-baseline">
-                                <span class="libraryentryname"></span>
+                                <span><i class="bi bi-globe"></i> <span class="libraryentryname"></span></span>
                                 <button class="btn btn-primary btn-sm" aria-label="Load ..." data-bs-toggle="modal" data-bs-target="#loadModelModal" data-global-library-path="">Load</button>
+                            </div>
+                        </template>
+                        <template id="localLibraryEntryTemplate">
+                            <div class="list-group-item d-flex justify-content-between align-items-baseline">
+                                <span class="libraryentryname"></span>
+                                <span>
+                                    <button class="btn btn-danger btn-sm deletelocallibraryentry" aria-label="Delete ..." data-local-library-entry-key=""><i class="bi bi-trash"></i></button>
+                                    <button class="btn btn-primary btn-sm loadlocallibraryentry" aria-label="Load ..." data-local-library-entry-key="">Load</button>
+                                </span>
                             </div>
                         </template>
                     </div>
@@ -443,6 +452,28 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="button" class="btn btn-primary formmodalsubmit" data-modalsubmittype="load">Load</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- save model modal -->
+        <div class="modal fade" id="saveModelModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="saveModelModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="saveModelModalLabel">Save model locally</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="saveModalNameInput" class="form-label">Model name</label>
+                            <input type="text" class="form-control" id="saveModalNameInput">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary formmodalsubmit" data-modalsubmittype="save">Save</button>
                     </div>
                 </div>
             </div>

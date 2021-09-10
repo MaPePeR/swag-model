@@ -307,7 +307,26 @@ var ui = (function () {
         }
     }(document.getElementById('shareModelModal'));
 
+    new class extends FormModal {
+        onSubmit() {
+            const key = document.getElementById('saveModalNameInput').value;
+            model.serialize().then(model.compressB64).then(function (data) {
+                library.addLocalLibraryentry(key, data);
+                ui.updateLibraryList();
+            });
+        }
+    }(document.getElementById('saveModelModal'));
+
     document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById('libraryListGroup').addEventListener('click', function (event) {
+            const button = event.target.closest('button');
+            if (button.matches('.deletelocallibraryentry')) {
+                library.deleteLocalLibraryEntry(button.dataset.localLibraryEntryKey);
+                ui.updateLibraryList();
+            } else if (button.matches('.loadlocallibraryentry')) {
+                model.deserializeB64(model.decompressB64(library.getLocalLibraryEntry(button.dataset.localLibraryEntryKey)));
+            }
+        });
         document.getElementById('timestepnumberinput').addEventListener('change', function () {
             model.setTimesteps(document.getElementById('timestepnumberinput').value);
         });
@@ -394,6 +413,20 @@ var ui = (function () {
                 globalTemplateLoadButton.setAttribute('aria-label', "Load " + entryname);
                 globalTemplateLoadButton.dataset.globalLibraryPath = entrypath;
                 fragment.appendChild(document.importNode(globalTemplate.content, true));
+            }
+
+            const localTemplate = document.getElementById('localLibraryEntryTemplate');
+            const localTemplateName = localTemplate.content.querySelector('.libraryentryname');
+            const localTemplateLoadButton = localTemplate.content.querySelector('button.loadlocallibraryentry');
+            const localTemplateDeleteButton = localTemplate.content.querySelector('button.deletelocallibraryentry');
+            for (const entryname of library.getLocalLibraryKeys()) {
+                localTemplateName.innerText = entryname;
+
+                localTemplateLoadButton.setAttribute('aria-label', "Load " + entryname);
+                localTemplateLoadButton.dataset.localLibraryEntryKey = entryname;
+                localTemplateDeleteButton.setAttribute('aria-label', "Delete " + entryname);
+                localTemplateDeleteButton.dataset.localLibraryEntryKey = entryname;
+                fragment.appendChild(document.importNode(localTemplate.content, true));
             }
 
             document.getElementById('libraryListGroup').replaceChildren(fragment);
