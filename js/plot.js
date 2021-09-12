@@ -262,7 +262,12 @@ var plot = (function () {
                     .attr("d", series => (d3.line()
                             .x(d => x(d))
                             .y(d => y(data[d * timestepsize + series]))(xvalues))
-                    );
+                    )
+                    .append('title').html((d, i) => {
+                        const inf = i % (infections.length + 1);
+                        const bg = Math.floor(i / (infections.length + 1));
+                        return backgrounds[bg].name + " " + (inf == 0 ? "Uninfected" : infections[inf - 1].name);
+                    });
         }
 
         plotLinesCombinedBackgrounds(data) {
@@ -274,7 +279,18 @@ var plot = (function () {
 
             const svg = this.makeSVG('#plotLinesCombined');
 
-            const max = d3.max(data);
+            const n_groups = infections.length + 1;
+
+            const sums = new Float32Array(n_groups * timesteps);
+            for (let i = 0; i < timesteps; i++) {
+                for (let infection = 0; infection < infections.length + 1; infection++) {
+                    for (let bg = 0; bg < backgrounds.length; bg++) {
+                        sums[i * n_groups + infection] += data[i * timestepsize + bg * n_groups + infection];
+                    }
+                }
+            }
+
+            const max = d3.max(sums);
 
             const x = this.makeXaxis(svg, [0, timesteps]);
             const y = this.makeYaxis(svg, [0, max]);
@@ -288,17 +304,6 @@ var plot = (function () {
 
             const xvalues = d3.range(timesteps);
 
-            const n_groups = infections.length + 1;
-
-            const sums = new Float32Array(n_groups * timesteps);
-            for (let i = 0; i < timesteps; i++) {
-                for (let infection = 0; infection < infections.length + 1; infection++) {
-                    for (let bg = 0; bg < backgrounds.length; bg++) {
-                        sums[i * n_groups + infection] += data[i * timestepsize + bg * n_groups + infection];
-                    }
-                }
-            }
-
             svg.append('g')
                 .selectAll("path")
                 .data(keys)
@@ -309,7 +314,10 @@ var plot = (function () {
                     .attr("d", series => (d3.line()
                             .x(d => x(d))
                             .y(d => y(sums[d * n_groups + series]))(xvalues))
-                    );
+                    )
+                    .append('title').html((d, i) => {
+                        return (d == 0 ? "Uninfected" : infections[d - 1].name);
+                    });
         }
 
     }
