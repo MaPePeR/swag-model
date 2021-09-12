@@ -309,6 +309,7 @@ var ui = (function () {
 
     new class extends FormModal {
         onShow(event) {
+            this.element.querySelector('.modal-body textarea').value = '';
             model.serialize().then((base64) => {
                 const textarea = this.element.querySelector('.modal-body textarea');
                 const compressed = model.compressB64(base64);
