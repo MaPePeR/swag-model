@@ -196,9 +196,14 @@ var ui = (function () {
     }(document.getElementById('editBetaMultiplierModal'));
 
     new class extends FormModalWithTabs {
+        constructor(element) {
+            super(element);
+            this.element.addEventListener('input', this.showTableWarnings.bind(this));
+        }
         onShow(event) {
             this.tables = [];
             FormModalWithTabs.prototype.onShow.call(this, event);
+            this.showTableWarnings();
         }
         getTabs() {
             const tabs = {};
@@ -218,6 +223,21 @@ var ui = (function () {
             this.tables.forEach((table, infectionTypeNumber) => {
                 model.setBackgroundTransitions(infectionTypeNumber, table.getData());
             });
+        }
+
+        showTableWarnings() {
+            const table = this.element.querySelector('table.numberinputtable');
+            for (const row of table.querySelectorAll('tbody > tr')) {
+                let sum = 0;
+                for (var input of row.querySelectorAll('input.numberinput')) {
+                    sum += parseFloat(input.value);
+                }
+                if (Math.abs(sum - 1) > 0.000001) {
+                    row.classList.add('bg-warning');
+                } else {
+                    row.classList.remove('bg-warning');
+                }
+            }
         }
     }(document.getElementById('editBackgroundTransitionsModal'));
 
