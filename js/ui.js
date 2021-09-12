@@ -226,16 +226,17 @@ var ui = (function () {
         }
 
         showTableWarnings() {
-            const table = this.element.querySelector('table.numberinputtable');
-            for (const row of table.querySelectorAll('tbody > tr')) {
-                let sum = 0;
-                for (var input of row.querySelectorAll('input.numberinput')) {
-                    sum += parseFloat(input.value);
-                }
-                if (Math.abs(sum - 1) > 0.000001) {
-                    row.classList.add('bg-warning');
-                } else {
-                    row.classList.remove('bg-warning');
+            for (const table of this.element.querySelectorAll('table.numberinputtable')) {
+                for (const row of table.querySelectorAll('tbody > tr')) {
+                    let sum = 0;
+                    for (var input of row.querySelectorAll('input.numberinput')) {
+                        sum += parseFloat(input.value);
+                    }
+                    if (Math.abs(sum - 1) > 0.000001) {
+                        row.classList.add('bg-warning');
+                    } else {
+                        row.classList.remove('bg-warning');
+                    }
                 }
             }
         }
