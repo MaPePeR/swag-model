@@ -187,7 +187,9 @@ var plot = (function () {
             const svg = this.makeSVG('#plotArea');
 
             // List of groups = header of the csv files
-            const keys = d3.range(timestepsize);
+            const keys = d3.range(timestepsize).map(d => {
+                return (infections.length + 1) * (d % backgrounds.length) + Math.floor(d / backgrounds.length);
+            });
 
             //stack the data?
             const stackedData = d3.stack()
@@ -222,9 +224,9 @@ var plot = (function () {
                         .y0(d => y(d[0]))
                         .y1(d => y(d[1]))
                     )
-                    .append('title').html((d, i) => {
-                        const inf = i % (infections.length + 1);
-                        const bg = Math.floor(i / (infections.length + 1));
+                    .append('title').html((d, i, a) => {
+                        const inf = d.key % (infections.length + 1);
+                        const bg = Math.floor(d.key / (infections.length + 1));
                         return backgrounds[bg].name + " " + (inf == 0 ? "Uninfected" : infections[inf - 1].name);
                     });
         }
