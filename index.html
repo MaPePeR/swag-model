@@ -236,17 +236,17 @@
 
 
 
-                <!-- Define start condition & Date -->
+                <!-- Define initial condition & Date -->
                 <div class="col explanation">
-                    <h3>Start conditions</h3>
-                    <p>The start conditions control the initial distribution of people over the backgrounds and infections.</p>
+                    <h3>Initial condition</h3>
+                    <p>The initial conditions control the initial distribution of people over the backgrounds and infections.</p>
                 </div>
                 <div class="col mb-3">
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex justify-content-between">
-                                <span>Start conditions <span class="math ms-3"><i>N</i> = <span id="totalPopulationCount"></span></span></span>
-                                <button type="button" name="button" class="btn btn-link py-0" aria-label="Edit start conditions" data-bs-toggle="modal" data-bs-target="#editStartConditionsModal"><i class="bi bi-pencil"></i></button>
+                                <span>Initial condition <span class="math ms-3"><i>N</i> = <span id="totalPopulationCount"></span></span></span>
+                                <button type="button" name="button" class="btn btn-link py-0" aria-label="Edit initial conditions" data-bs-toggle="modal" data-bs-target="#editInitialConditionsModal"><i class="bi bi-pencil"></i></button>
                             </div>
                         </div>
                     </div>
@@ -461,15 +461,15 @@
             </div>
         </div>
 
-        <!-- start conditions modal--->
-        <div class="modal fade" id="editStartConditionsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editStartConditionsModalLabel" aria-hidden="true">
+        <!-- initial conditions modal--->
+        <div class="modal fade" id="editInitialConditionsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editInitialConditionsModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editStartConditionsModalLabel">Background contact matrix</h5>
+                        <h5 class="modal-title" id="editInitialConditionsModalLabel">Background contact matrix</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body" id="editStartConditionsModalBody">
+                    <div class="modal-body" id="editInitialConditionsModalBody">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -537,8 +537,8 @@
                         <p class="betaMultipliers"></p>
                         <h6>Transitions</h6>
                         <p class="transitions"></p>
-                        <h6>Start condition</h6>
-                        <p class="startConditon"></p>
+                        <h6>Initial condition</h6>
+                        <p class="initialCondition"></p>
                         <h6>Global &beta; multiplier</h6>
                         <p class="globalBetaMultiplier"></p>
                     </template>
@@ -603,7 +603,7 @@
                 //model.addBackground('Bg3')
 
                 model.setBetaMultipliers(0, [1]);
-                model.setStartCondition([999,1]);
+                model.setInitialCondition([999,1]);
                 model.setBackgroundTransitions(0, [1]);
 
                 model.setGlobalBetaPoints([

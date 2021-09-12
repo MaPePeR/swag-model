@@ -17,7 +17,7 @@ var model = (function () {
 
             this.transitions = [];
 
-            this.startConditon = new Matrix(0, 1);
+            this.initialCondition = new Matrix(0, 1);
 
             this.globalBetaPoints = [];
 
@@ -45,7 +45,7 @@ var model = (function () {
                 4 +                    // Number of Backgrounds(N_B)
                 4 * N_I * N_B * N_B +  // Beta multipliers
                 4 * N_I * N_B * N_B +  // Transititios
-                4 * (N_I + 1) * N_B +  // Start condition
+                4 * (N_I + 1) * N_B +  // Initial condition
                 4 +                    // Number of GlobalbetaPoints (N_GBP)
                 N_GBP * (4 + 4) +      // Global Beta Points x, y
                 4 +                    // Number of timesteps
@@ -70,7 +70,7 @@ var model = (function () {
                 copyFloat32ArrayToView(view, offset, N_B * N_B, this.transitions[infectionTypeNumber].array);
                 offset += N_B * N_B;
             }
-            copyFloat32ArrayToView(view, offset, ((N_I + 1) * N_B), this.startConditon.array);
+            copyFloat32ArrayToView(view, offset, ((N_I + 1) * N_B), this.initialCondition.array);
             offset += ((N_I + 1) * N_B);
             view.setInt32(4 * offset++, N_GBP);
             for (var globalBetaPoint of this.globalBetaPoints) {
@@ -156,8 +156,8 @@ var model = (function () {
                 offset += N_B * N_B;
                 this.transitions.push(m);
             }
-            this.startConditon = new Matrix(N_B, N_I + 1);
-            copyViewToFloat32Array(this.startConditon.array, view, offset,  (N_I + 1) * N_B);
+            this.initialCondition = new Matrix(N_B, N_I + 1);
+            copyViewToFloat32Array(this.initialCondition.array, view, offset,  (N_I + 1) * N_B);
             offset += ((N_I + 1) * N_B);
             const N_GBP = view.getInt32(4 * offset++);
             this.globalBetaPoints = [];
@@ -185,7 +185,7 @@ var model = (function () {
             ui.recreateInfectionTypeTable();
             ui.recreateBackgroundTable();
             ui.updateTimesteps();
-            ui.updateStartConditionCard();
+            ui.updateInitialConditionCard();
         }
 
         compressB64(b64text) {
@@ -219,7 +219,7 @@ var model = (function () {
 
             this.transitions.push(new Matrix(this.backgrounds.length, this.backgrounds.length));
 
-            this.startConditon.addColumn();
+            this.initialCondition.addColumn();
 
             ui.recreateInfectionTypeTable();
             return newInfectionType.number;
@@ -237,7 +237,7 @@ var model = (function () {
 
             this.transitions = this.transitions.filter((item, i) => i != infectionTypeNumber);
 
-            this.startConditon.deleteColumn(1 + infectionTypeNumber);
+            this.initialCondition.deleteColumn(1 + infectionTypeNumber);
 
             ui.recreateInfectionTypeTable();
         }
@@ -270,7 +270,7 @@ var model = (function () {
                 transitionMatrix.addRow();
             }
 
-            this.startConditon.addRow();
+            this.initialCondition.addRow();
 
             ui.recreateBackgroundTable();
         }
@@ -298,7 +298,7 @@ var model = (function () {
                 transitionMatrix.deleteRow(number);
             }
 
-            this.startConditon.deleteRow(number);
+            this.initialCondition.deleteRow(number);
 
             ui.recreateBackgroundTable();
         }
@@ -331,13 +331,13 @@ var model = (function () {
             return this.transitions[infectionTypeNumber];
         }
 
-        setStartCondition(startConditon) {
-            this.startConditon.setData(startConditon);
+        setInitialCondition(initialCondition) {
+            this.initialCondition.setData(initialCondition);
 
-            ui.updateStartConditionCard();
+            ui.updateInitialConditionCard();
         }
-        getStartConditon() {
-            return this.startConditon;
+        getInitialCondition() {
+            return this.initialCondition;
         }
 
         getGlobalBetaPoints() {

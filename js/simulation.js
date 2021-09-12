@@ -14,7 +14,7 @@ var simulation = (function () {
             const nbackground = backgrounds.length;
             const timestepsize = (ninf + 1) * nbackground;
 
-            const N = model.getStartConditon().array.reduce((a, b) => a + b);
+            const N = model.getInitialCondition().array.reduce((a, b) => a + b);
 
             function result(offset, backgroundNumber, infNumber) {
                 return 'result[' + offset + 'offset + ' + (backgroundNumber * (ninf + 1) + infNumber + 1) + ']';
@@ -106,12 +106,12 @@ var simulation = (function () {
 
         run(n) {
             let f = this.compileStepFunction();
-            let start = model.getStartConditon();
-            let result = new Float32Array(n * start.nrows * start.ncols);
+            let initialCondition = model.getInitialCondition();
+            let result = new Float32Array(n * initialCondition.nrows * initialCondition.ncols);
 
             const globalbeta = this.calculateGlobalBeta(n);
 
-            result.set(start.array);
+            result.set(initialCondition.array);
             return f(n, result, globalbeta);
         }
 

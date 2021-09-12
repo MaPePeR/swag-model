@@ -223,24 +223,24 @@ var ui = (function () {
 
     new class extends FormModal {
         onShow(event) {
-            this.table = this.table || new NumberInputTable(document.getElementById('editStartConditionsModalBody'), 'Background', 'People susceptible or infected');
+            this.table = this.table || new NumberInputTable(document.getElementById('editInitialConditionsModalBody'), 'Background', 'People susceptible or infected');
             let backgrounds = model.getBackgroundNames();
             let infections = model.getInfectionTypes().map(type => type.name);
 
             if (backgrounds.length == 0) {
-                this.table.el.innerHTML = 'You need to define backgrounds before you can define the start conditions';
+                this.table.el.innerHTML = 'You need to define backgrounds before you can define the initial conditions';
                 return;
             }
 
-            this.table.setData(backgrounds, ['Susceptible'].concat(infections), model.getStartConditon());
+            this.table.setData(backgrounds, ['Susceptible'].concat(infections), model.getInitialCondition());
 
             this.table.redraw();
 
         }
         onSubmit(submitType, event) {
-            model.setStartCondition(this.table.getData());
+            model.setInitialCondition(this.table.getData());
         }
-    }(document.getElementById('editStartConditionsModal'));
+    }(document.getElementById('editInitialConditionsModal'));
 
     new class extends FormModal {
         onShow(event) {
@@ -297,7 +297,7 @@ var ui = (function () {
             t.content.querySelector('.backgrounds').innerText = this.libraryentry.backgrounds;
             t.content.querySelector('.betaMultipliers').innerText = this.libraryentry.betaMultipliers;
             t.content.querySelector('.transitions').innerText = this.libraryentry.transitions;
-            t.content.querySelector('.startConditon').innerText = this.libraryentry.startConditon;
+            t.content.querySelector('.initialCondition').innerText = this.libraryentry.initialCondition;
             t.content.querySelector('.globalBetaMultiplier').innerText = this.libraryentry.globalBetaMultiplier;
 
             this.element.querySelector('.modal-body').replaceChildren(document.importNode(t.content, true));
@@ -454,8 +454,8 @@ var ui = (function () {
 
             document.getElementById('libraryListGroup').replaceChildren(fragment);
         },
-        updateStartConditionCard: function () {
-            document.getElementById('totalPopulationCount').innerText = d3.sum(model.getStartConditon().array);
+        updateInitialConditionCard: function () {
+            document.getElementById('totalPopulationCount').innerText = d3.sum(model.getInitialCondition().array);
         },
     };
 })();
