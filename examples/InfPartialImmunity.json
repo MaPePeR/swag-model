@@ -1,0 +1,11 @@
+{
+    "name": "Infection grants partial immunity",
+    "description": "A SIS model with an infection that grants partial immunity after infection.",
+    "infectionTypes": "Only one infection with β=0.2 and γ=0.04 is defined.",
+    "backgrounds": "There are two backgrounds. One for no immunity and a second one for partial immunity.",
+    "betaMultipliers": "The beta multipliers are set up in a way, that infection between a person without immunity and a person with immunity is reduced by 50% and infection between two people with partial immunity is reduced by 75%",
+    "transitions": "After infection the susceptible are moved to the partial immunity background.",
+    "initialCondition": "We start with 999 susceptible and 1 infected people.",
+    "globalBetaMultiplier": "No global beta multiplier is used.",
+    "model": "*2Q*1E+TMzNPSPXCg*1I/g*0Pw*0D8*1+g*5D+*6P4*0ER5wAA/g*JB9*1CY*0BJ*1bg*0GY*0Bl*1Yw*0HQ*0Bp*1bw*0G4*6Tg*0G8*1g*1SQ*0G0*0Bt*1dQ*0G4*0Bp*1d*1Hk*6U*1GE*0By*1d*1Gk*0Bh*1b*1C*1BJ*1bQ*0G0*0B1*1bg*0Gk*0B0*1eQ=="
+}
