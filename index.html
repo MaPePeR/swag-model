@@ -383,7 +383,26 @@
                     </div>
                     <button class="btn btn-primary" id="startsimulatonbutton">Start simulation</button>
                 </div>
-                <div class="col-12" id="plot1"></div>
+            </div>
+            <div class="row" id="resultrow" style="display: none;">
+                <div class="col-12">
+                    <h3>Result</h3>
+                    <figure class="figure">
+                        <svg id="plotArea"></svg>
+                        <figcaption class="figure-caption">Stacked area plot showing the amount of people in each background and their susceptible/infected state.</figcaption>
+                    </figure>
+
+                    <figure class="figure">
+                        <svg id="plotLines"></svg>
+                        <figcaption class="figure-caption">Line plot showing the amount of people in each background </figcaption>
+                    </figure>
+
+                    <figure class="figure">
+                        <svg id="plotLinesCombined"></svg>
+                        <figcaption class="figure-caption">Line plot showing the total amount of people over all backgrounds that are susceptible/infected.</figcaption>
+                    </figure>
+                </div>
+
             </div>
         </div>
 

@@ -145,13 +145,13 @@ var plot = (function () {
         }
 
         makeSVG(id) {
+            d3.select(id).selectAll("*").remove();
             return d3.select(id)
-                .append("svg")
-                    .attr("width", '100%'/*width + margin.left + margin.right*/)
-                    .attr("height", this.height + this.margin.top + this.margin.bottom)
-                    .attr('viewBox', [0, 0, this.width + this.margin.left + this.margin.right, this.height + this.margin.top + this.margin.bottom])
-                .append("g")
-                    .attr("transform", `translate(${this.margin.left}, ${this.margin.top})`);
+                .attr("width", '100%'/*width + margin.left + margin.right*/)
+                .attr("height", this.height + this.margin.top + this.margin.bottom)
+                .attr('viewBox', [0, 0, this.width + this.margin.left + this.margin.right, this.height + this.margin.top + this.margin.bottom])
+            .append("g")
+                .attr("transform", `translate(${this.margin.left}, ${this.margin.top})`);
         }
         makeXaxis(svg, xdomain) {
             const x = d3.scaleLinear()
@@ -171,7 +171,7 @@ var plot = (function () {
             return y;
         }
         plot(data) {
-            document.getElementById('plot1').innerHTML = '';
+            document.getElementById('resultrow').style.display = 'block';
             this.plotArea(data);
             this.plotLines(data);
             this.plotLinesCombinedBackgrounds(data);
@@ -184,7 +184,7 @@ var plot = (function () {
             const timesteps = data.length / timestepsize;
 
             // append the svg object to the body of the page
-            const svg = this.makeSVG('#plot1');
+            const svg = this.makeSVG('#plotArea');
 
             // List of groups = header of the csv files
             const keys = d3.range(timestepsize);
@@ -236,7 +236,7 @@ var plot = (function () {
             const timestepsize =  (infections.length + 1) * backgrounds.length;
             const timesteps = data.length / timestepsize;
 
-            const svg = this.makeSVG('#plot1');
+            const svg = this.makeSVG('#plotLines');
 
             const max = d3.max(data);
 
@@ -272,7 +272,7 @@ var plot = (function () {
             const timestepsize =  (infections.length + 1) * backgrounds.length;
             const timesteps = data.length / timestepsize;
 
-            const svg = this.makeSVG('#plot1');
+            const svg = this.makeSVG('#plotLinesCombined');
 
             const max = d3.max(data);
 
