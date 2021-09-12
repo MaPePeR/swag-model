@@ -5,6 +5,7 @@
 const globalLibrary = {
     "SIS model": "examples/SIS.json",
     "SIRD model": "examples/SIRD.json",
+    "Multiple infections": "examples/MultipleInf.json",
 };
 
 /* exported library */
