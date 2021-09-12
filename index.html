@@ -15,6 +15,9 @@
                 text-align: justify;
                 text-justify: inter-word;
             }
+            .card-body.explanation p:last-of-type {
+                margin-bottom: 0;
+            }
             .math {
                 font-family: serif;
             }
@@ -90,11 +93,45 @@
     <body class="mb-3">
         <div class="container">
             <h1>Title...</h1>
-            <!-- Define Infections with parameters -->
+            <div class="row row-cols-1 row-cols-lg-2">
+                <div class="col explanation order-last order-lg-first">
+                    <h2>Idea</h2>
+                    <p>The idea behind this model is to <i>overcomplicate</i> a <a href="https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology#The_SIS_model" target="_blank">SIS model</a> in order to make it more flexible.</p>
+                    <p>This was achieved by adding the possibility for multiple infections, "Backgrounds" for the population, which can change the behaivior of an infection, a state machine that can change the "Background" after an infection and a global infection multiplier.</p>
+                    <p>This combination allows to model</p>
+                    <ul>
+                        <li>the <a href="https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology#The_SIRD_model" target="_blank">SIRD model</a></li>
+                        <li>Age groups or people with preexisting conditions</li>
+                        <li>Partial immunity after infection</li>
+                        <li>Saisionality or interventions</li>
+                        <li>...</li>
+                    </ul>
+                    <p>
+                        Not all envisaged features have been implemented, yet.
+                        In order to model vaccination or multiple emerging strains the model would need more ways to define outside influences that add newly infected people or move susceptible to a "vaccinated" background.
+                    </p>
+                    <p>
+                        Some UI and "quality of life" features are also missing, like the possibility to reorder and copy infections and backgrounds, the plot legend and the ability to specify plot colors.
+                        (The area plot has tooltips!)
+                    </p>
+                </div>
+                <div class="col mb-3">
+                    <div class="card">
+                        <div class="card-header text-white bg-danger">
+                            Disclaimer
+                        </div>
+                        <div class="card-body explanation">
+                            <p>This model has not been reviewed, yet, and was written in free time by a hobbyist-mathematician with no background or knowledge in virology or infectious diseases.</p>
+                            <p>The website was only tested with Google Chrome and Firefox. It will definitely not work in Internet Explorer and Safari will probably also cause problems.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="row row-cols-1 row-cols-lg-2">
                 <div class="col explanation">
                     <h2>Models</h2>
-                    <p></p>
+                    <p>Here you can load example models, create a link that can be used to share your current model and save your current model locally.</p>
+                    <p class="text-muted"><small>The models are stored in "<code>localStorage</code>". Some "cleanup utilities" might result in deletion of your locally saved models.</small></p>
                 </div>
                 <div class="col mb-3">
                     <div class="card">
@@ -124,6 +161,7 @@
                         </template>
                     </div>
                 </div>
+                <!-- Define Infections with parameters -->
                 <div class="col explanation">
                     <h2>Infection Types</h2>
                     <p>Define one or multiple infection types and their infection parameters <span class="math"><i>&beta;</i></span> and <span><i>&gamma;</i></span>.
