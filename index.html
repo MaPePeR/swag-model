@@ -213,6 +213,7 @@
                 <div class="col explanation">
                     <h3>Background transitions</h3>
                     <p>Specify how the background changes after infection. This can be used to specify the portion of people that die because of infection or grant immunity through infection.</p>
+                    <p>Make sure that the sum of each row equals 1.0, otherwise the population count will change.</p>
                 </div>
                 <div class="col mb-3">
                     <div class="card">
@@ -239,7 +240,7 @@
                 <!-- Define initial condition & Date -->
                 <div class="col explanation">
                     <h3>Initial condition</h3>
-                    <p>The initial conditions control the initial distribution of people over the backgrounds and infections.</p>
+                    <p>The initial conditions control the initial distribution of people over the backgrounds and infections. The sum of this table will be used for the total population count.</p>
                 </div>
                 <div class="col mb-3">
                     <div class="card">
@@ -276,7 +277,7 @@
                     <h3>Simulation</h3>
                     <center><table class="math">
                         <tr><td>
-                            <i>I<sub>i,j</sub></i>
+                            d<i>I<sub>i,j</sub></i>/d<i>t</i>
                         </td><td>
                             =
                         </td><td>
@@ -290,17 +291,20 @@
                         </td><td>
                             - <i>&gamma;<sub>i</sub></i> &centerdot;
                         </td><td>
-                            <i>I<sub>i,j</sub></i> &centerdot;
-                            <span class="sum-display-inline">
-                                <span class="lim upper"><i>N<sub>B</sub></i></span>
-                                <span class="sum">&Sigma;</span>
-                                <span class="lim lower"><i>l</i>=1</span>
+                            <i>I<sub>i,j</sub></i> &centerdot; 1
+                            <span class="text-muted">,
+                                <span class="sum-display-inline" style="margin-left: 50px;">
+                                    <span class="lim upper"><i>N<sub>B</sub></i></span>
+                                    <span class="sum">&Sigma;</span>
+                                    <span class="lim lower"><i>l</i>=1</span>
+                                </span>
+                                <i>t<sub>i,j,l</sub></i>
+                                </div>
+                                = 1
                             </span>
-                            <i>t<sub>i,j,l</sub></i>
-                            </div>
                         </td></tr>
                         <tr><td>
-                            <i>S<sub>j</sub></i>
+                            d<i>S<sub>j</sub></i> / d<i>t</i>
                         </td><td>
                             =
                         </td><td>
