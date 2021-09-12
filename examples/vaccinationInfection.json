@@ -1,0 +1,11 @@
+{
+    "name": "Vaccination as Infection",
+    "description": "A SIRD model with an additional infection that acts as vaccination",
+    "infectionTypes": "There are two infections defined. One \"normal\" infection with β=0.4 and γ=0.04 and an additonal \"vaccination\" infection that has γ=0, so no way to \"recover\". Thus the vaccinated population remains in the infected group and cannot be infected by the real infection.",
+    "backgrounds": "There are three backgrounds. One for the Susceptible, one for Recovered and one for Deceased.",
+    "betaMultipliers": "The beta multipliers are set up in the same way as for the normal SIRD model. Only the susceptible can infect and be infected.",
+    "transitions": "After infection the susceptible are split 87.5% to Recovered and 12.5% to Deceased. This coresponds to γ = 0.04 · 0.875 = 0.35 and μ = 0.04 · 0.125 = 0.05 in traditional SIRD.",
+    "initialCondition": "We start with 996.5 susceptible, 3 infected people and 0.5 vaccinated people.",
+    "globalBetaMultiplier": "No global beta multiplier is used.",
+    "model": "*2Q*1I+zMzNPSPXCj8*Bz+*Z*5D+*Z*B/Y*0Pg*6/g*GP4*0D+*H/g*GP4*0ER5IABAQ*0Pw*Z*3CW*1Mw*0Ek*0Bu*1Zg*0GU*0Bj*1d*1GU*0Bk*6FY*0Bh*1Yw*0GM*0Bp*1bg*0GE*0B0*1aQ*0G8*0Bu*6FM*0B1*1cw*0GM*0Bl*1c*1HQ*0Bp*1Yg*0Gw*0Bl*6FI*0Bl*1Yw*0G8*0B2*1ZQ*0HI*0Bl*1Z*6BE*1ZQ*0GM*0Bl*1YQ*0HM*0Bl*1ZA=="
+}
