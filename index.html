@@ -63,6 +63,29 @@
                 fill: blue;
             }
         </style>
+        <style media="screen">
+            .sum-display-inline {
+                display: inline-block;
+                text-align: center;
+            }
+            .sum-display-inline > .sum {
+                font-size: 150%;
+                display: block;
+            }
+            .sum-display-inline > .lim {
+                display: block;
+                font-size: 75%;
+            }
+            .sum-display-inline > .lim.lower {
+                margin-top: -1ex;
+                float: left;
+                clear: left;
+                width: 100%;
+            }
+            .sum-display-inline > .lim.upper {
+                margin-bottom: -1ex;
+            }
+        </style>
     </head>
     <body class="mb-3">
         <div class="container">
@@ -71,6 +94,7 @@
             <div class="row row-cols-1 row-cols-lg-2">
                 <div class="col explanation">
                     <h2>Models</h2>
+                    <p></p>
                 </div>
                 <div class="col mb-3">
                     <div class="card">
@@ -81,7 +105,7 @@
                                 <button class="btn btn-link py-0" aria-label="Save current model" data-bs-toggle="modal" data-bs-target="#saveModelModal"><i class="bi bi-save"></i></button>
                             </span>
                         </div>
-                        <div class="list-group list-group-flush" id="libraryListGroup">
+                        <div class="list-group list-group-flush" id="libraryListGroup" style="max-height: 400px; overflow-y: auto;">
                         </div>
                         <template id="globalLibraryEntryTemplate">
                             <div class="list-group-item d-flex justify-content-between align-items-baseline">
@@ -102,11 +126,16 @@
                 </div>
                 <div class="col explanation">
                     <h2>Infection Types</h2>
+                    <p>Define one or multiple infection types and their infection parameters <span class="math"><i>&beta;</i></span> and <span><i>&gamma;</i></span>.
+                        The <span class="math"><i>&beta;</i></span> parameter controls how many infections a single person causes in a time step.
+                        The <span class="math"><i>&gamma;</i></span> parameter controls for how long a person is infected.</p>
+                    <p>A person in this model can only ever be infected by a single infection type.
+                        The <span class="math"><i>&beta;</i></span> parameter can be modified based on the backgrounds of the infected and exposed.</p>
                 </div>
                 <div class="col mb-3">
                     <div class="card">
                         <div class="card-header d-flex justify-content-between">
-                            <span>Infection Types</span>
+                            <span>Infection Types <span class="math ms-3"><i>N<sub>I</sub></i> = <span id="infection-type-count"></span></span></span>
                             <button type="button" name="button" class="btn btn-link py-0" aria-label="Add infection type" data-bs-toggle="modal" data-bs-target="#addEditInfectionTypeModal" data-infection-type="new"><i class="bi bi-plus-square"></i></button>
                         </div>
                         <table class="table mb-0">
@@ -117,9 +146,9 @@
                         <template id="infectionTypeTableRowTemplate">
                             <tr>
                                 <td class="infection-type-name">Alpha</td>
-                                <td class="math"><i>&beta;</i> = <span class="infection-type-beta">2.4</span></td>
-                                <td class="math"><i>&gamma;</i> = <span class="infection-type-gamma">1.4</span></td>
-                                <td class="math"><i>R<sub>0</sub></i> = <span class="infection-type-r0">1.4</span></td>
+                                <td class="math"><i>&beta;</i><sub class="infection-type-number"></sub> = <span class="infection-type-beta">2.4</span></td>
+                                <td class="math"><i>&gamma;</i><sub class="infection-type-number"></sub> = <span class="infection-type-gamma">1.4</span></td>
+                                <td class="math"><i>R</i><sub>0, <span class="infection-type-number"></span></sub> = <span class="infection-type-r0">1.4</span></td>
                                 <td class="text-end">
                                     <button type="button" name="button" class="btn btn-link py-0 infection-type-edit-button" aria-label="Edit infection type" data-bs-toggle="modal" data-bs-target="#addEditInfectionTypeModal" data-infection-type="1"><i class="bi bi-pencil"></i></button>
                                     <span class="reorder">
@@ -140,7 +169,7 @@
                 <div class="col mb-3">
                     <div class="card">
                         <div class="card-header d-flex justify-content-between">
-                            <span>Backgrounds</span>
+                            <span>Backgrounds <span class="math ms-3"><i>N<sub>B</sub></i> = <span id="background-count"></span></span></span>
                             <button type="button" name="button" class="btn btn-link py-0" aria-label="Add background" data-bs-toggle="modal" data-bs-target="#addEditBackgroundModal" data-background-number="new"><i class="bi bi-plus-square"></i></button>
                         </div>
                         <table class="table mb-0">
@@ -172,7 +201,7 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex justify-content-between">
-                                <span>&beta; multipliers</span>
+                                <span>&beta; multipliers <span class="math ms-3"><i>b<sub>i,j,k</sub></i></span></span>
                                 <button type="button" name="button" class="btn btn-link py-0" aria-label="Edit beta multipliers" data-bs-toggle="modal" data-bs-target="#editBetaMultiplierModal"><i class="bi bi-pencil"></i></button>
                             </div>
                         </div>
@@ -189,7 +218,7 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex justify-content-between">
-                                <span>Background transitions</span>
+                                <span>Background transitions <span class="math ms-3"><i>t<sub>i,j,k</sub></i></span></span>
                                 <button type="button" name="button" class="btn btn-link py-0" aria-label="Edit background transitions" data-bs-toggle="modal" data-bs-target="#editBackgroundTransitionsModal"><i class="bi bi-pencil"></i></button>
                             </div>
                             <!--<ul class="nav nav-tabs card-header-tabs">
@@ -216,7 +245,7 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex justify-content-between">
-                                <span>Start conditions</span>
+                                <span>Start conditions <span class="math ms-3"><i>N</i> = <span id="totalPopulationCount"></span></span></span>
                                 <button type="button" name="button" class="btn btn-link py-0" aria-label="Edit start conditions" data-bs-toggle="modal" data-bs-target="#editStartConditionsModal"><i class="bi bi-pencil"></i></button>
                             </div>
                         </div>
@@ -231,7 +260,7 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex justify-content-between">
-                                <span>Global &beta; multiplier</span>
+                                <span>Global &beta; multiplier <span class="math ms-3"><i>&beta;</i>(<i>t</i>)</span></span>
                                 <button type="button" name="button" class="btn btn-link py-0" aria-label="Edit global beta multiplier" data-bs-toggle="modal" data-bs-target="#editGlobalBetaModal"><i class="bi bi-pencil"></i></button>
                             </div>
                         </div>
@@ -245,6 +274,65 @@
                 <!-- Calculate/Plot -->
                 <div class="col-12">
                     <h3>Simulation</h3>
+                    <center><table class="math">
+                        <tr><td>
+                            <i>I<sub>i,j</sub></i>
+                        </td><td>
+                            =
+                        </td><td>
+                        </td><td>
+                            <span class="sum-display-inline">
+                                <span class="lim upper"><i>N<sub>B</sub></i></span>
+                                <span class="sum">&Sigma;</span>
+                                <span class="lim lower"><i>k</i>=1</span>
+                            </span>
+                            <i>S<sub>j</sub></i> &centerdot; <i>b<sub>i,j,k</sub></i> &centerdot; <i>&beta;<sub>i</sub></i> &centerdot;  <i>&beta;</i>(<i>t</i>) &centerdot; <i>I<sub>i,k</sub></i> / <i>N</i>
+                        </td><td>
+                            - <i>&gamma;<sub>i</sub></i> &centerdot;
+                        </td><td>
+                            <i>I<sub>i,j</sub></i> &centerdot;
+                            <span class="sum-display-inline">
+                                <span class="lim upper"><i>N<sub>B</sub></i></span>
+                                <span class="sum">&Sigma;</span>
+                                <span class="lim lower"><i>l</i>=1</span>
+                            </span>
+                            <i>t<sub>i,j,l</sub></i>
+                            </div>
+                        </td></tr>
+                        <tr><td>
+                            <i>S<sub>j</sub></i>
+                        </td><td>
+                            =
+                        </td><td>
+                            -<span class="sum-display-inline">
+                                <span class="lim upper"><i>N<sub>I</sub></i></span>
+                                <span class="sum">&Sigma;</span>
+                                <span class="lim lower"><i>i</i>=1</span>
+                            </span>
+                        </td><td>
+                            <span class="sum-display-inline">
+                                <span class="lim upper"><i>N<sub>B</sub></i></span>
+                                <span class="sum">&Sigma;</span>
+                                <span class="lim lower"><i>k</i>=1</span>
+                            </span>
+                            <i>S<sub>j</sub></i> &centerdot; <i>b<sub>i,j,k</sub></i> &centerdot; <i>&beta;<sub>i</sub></i> &centerdot;  <i>&beta;</i>(<i>t</i>) &centerdot; <i>I<sub>i,k</sub></i> / <i>N</i>
+                             +
+                            <span class="sum-display-inline">
+                                <span class="lim upper"><i>N<sub>I</sub></i></span>
+                                <span class="sum">&Sigma;</span>
+                                <span class="lim lower"><i>i</i>=1</span>
+                            </span>
+                        </td><td align="right">
+                                <i>&gamma;<sub>i</sub></i> &centerdot;
+                        </td><td>
+                            <span class="sum-display-inline">
+                                <span class="lim upper"><i>N<sub>B</sub></i></span>
+                                <span class="sum">&Sigma;</span>
+                                <span class="lim lower"><i>m</i>=1</span>
+                            </span>
+                            <i>I<sub>i,m</sub></i> &centerdot; <i>t<sub>i,m,j</sub></i>
+                        </td>
+                    </table></center>
                     <div class="mb-3">
                         <label for="timestepnumberinput" class="form-label">Number of time steps</label>
                         <input type="number" class="form-control" step="1" min="1" value="500" id="timestepnumberinput"/>
@@ -270,11 +358,11 @@
                         </div>
                         <div class="mb-3">
                             <label for="infectionTypeBeta" class="form-label">&beta;</label>
-                            <input type="number" class="form-control" id="infectionTypeBeta">
+                            <input type="number" class="form-control" id="infectionTypeBeta" min="0" step="0.0001">
                         </div>
                         <div class="mb-3">
                             <label for="infectionTypeGamma" class="form-label">&gamma;</label>
-                            <input type="number" class="form-control" id="infectionTypeGamma">
+                            <input type="number" class="form-control" id="infectionTypeGamma" min="0" step="0.0001">
                         </div>
                         <div class="mb-3">
                             <label for="infectionTypeR0" class="form-label">R<sub>0</sub></label>

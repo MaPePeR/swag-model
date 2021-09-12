@@ -361,8 +361,11 @@ var ui = (function () {
         let gamma = t.content.querySelector('.infection-type-gamma');
         let r0 = t.content.querySelector('.infection-type-r0');
         let editButton = t.content.querySelector('.infection-type-edit-button');
+        let numbers = t.content.querySelectorAll('.infection-type-number');
 
         let infectionTypes = model.getInfectionTypes();
+
+        document.getElementById('infection-type-count').innerText = infectionTypes.length;
 
         if (infectionTypes.length == 0) {
             document.getElementById('infectionTypeTableBody').innerHTML = '<tr><td colspan="4"><i class="text-muted">No infection types have been defined, yet</i></td></tr>';
@@ -374,6 +377,9 @@ var ui = (function () {
                 beta.innerText = infectionType.beta;
                 gamma.innerText = infectionType.gamma;
                 r0.innerText = (infectionType.beta / infectionType.gamma).toFixed(2);
+                for (const el of numbers) {
+                    el.innerText = i + 1;
+                }
                 editButton.dataset.infectionType = infectionType.number;
                 fragment.appendChild(document.importNode(t.content, true));
             });
@@ -389,6 +395,8 @@ var ui = (function () {
         let editButton = t.content.querySelector('.background-edit-button');
 
         let backgrounds = model.getBackgrounds();
+
+        document.getElementById('background-count').innerText = backgrounds.length;
 
         if (backgrounds.length == 0) {
             document.getElementById('backgroundTableBody').innerHTML = '<tr><td colspan="4"><i class="text-muted">No backgrounds have been defined, yet</i></td></tr>';
@@ -445,6 +453,9 @@ var ui = (function () {
             }
 
             document.getElementById('libraryListGroup').replaceChildren(fragment);
+        },
+        updateStartConditionCard: function () {
+            document.getElementById('totalPopulationCount').innerText = d3.sum(model.getStartConditon().array);
         },
     };
 })();

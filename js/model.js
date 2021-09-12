@@ -185,6 +185,7 @@ var model = (function () {
             ui.recreateInfectionTypeTable();
             ui.recreateBackgroundTable();
             ui.updateTimesteps();
+            ui.updateStartConditionCard();
         }
 
         compressB64(b64text) {
@@ -332,6 +333,8 @@ var model = (function () {
 
         setStartCondition(startConditon) {
             this.startConditon.setData(startConditon);
+
+            ui.updateStartConditionCard();
         }
         getStartConditon() {
             return this.startConditon;
