@@ -249,6 +249,27 @@
                     <!--<img src="..." class="card-img-bottom" alt="Heatmap showing the beta multipliers"/>-->
                 </div>
 
+                <!-- Define gamma multipliers -->
+                <div class="col explanation">
+                    <h3>Group &gamma; multipliers</h3>
+                    <p>Define a multiplier that is applied to the <span class="math"><i>&gamma;</i></span> value of an Infection based on the group of the infected <emph>before</emph> transitioning to a different group.</p>
+                    <p>
+                        Can additionally be used to change infectiousness based on the group.
+                        Set <span class="math"><i>g<sub>i,j</sub></i> > 1 </span> to reduce the infectiousness and <span class="math"><i>g<sub>i,j</sub></i> < 1 </span> to increase it.
+                    </p>
+                </div>
+                <div class="col mb-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between">
+                                <span>Group &gamma; multipliers <span class="math ms-3"><i>g<sub>i,j</sub></i></span></span>
+                                <button type="button" name="button" class="btn btn-link py-0" aria-label="Edit beta multipliers" data-bs-toggle="modal" data-bs-target="#editGammaMultiplierModal"><i class="bi bi-pencil"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<img src="..." class="card-img-bottom" alt="Heatmap showing the beta multipliers"/>-->
+                </div>
+
                 <!-- Define Group state machine -->
                 <div class="col explanation">
                     <h3>Group transitions</h3>
@@ -332,6 +353,8 @@
                         </td><td>
                             - <i>&gamma;<sub>i</sub></i> &centerdot;
                         </td><td>
+                            </td><td>
+                            <i>g<sub>i,j</sub></i> &centerdot;
                             <i>I<sub>i,j</sub></i> &centerdot; 1
                             <span class="text-muted">,
                                 <span class="sum-display-inline" style="margin-left: 50px;">
@@ -344,6 +367,8 @@
                                 = 1
                             </span>
                         </td></tr>
+
+
                         <tr><td>
                             d<i>S<sub>j</sub></i> / d<i>t</i>
                         </td><td>
@@ -375,7 +400,8 @@
                                 <span class="sum">&Sigma;</span>
                                 <span class="lim lower"><i>m</i>=1</span>
                             </span>
-                            <i>I<sub>i,m</sub></i> &centerdot; <i>t<sub>i,m,j</sub></i>
+                        </td><td>
+                            <i>g<sub>i,m</sub></i> &centerdot; <i>I<sub>i,m</sub></i> &centerdot; <i>t<sub>i,m,j</sub></i>
                         </td>
                     </table></center>
                     <div class="mb-3">
@@ -490,10 +516,27 @@
                             <button class="nav-link" id="betaMultiplierTab-Inf999" data-bs-toggle="tab" data-bs-target="#betaMultiplierTabPane-Inf999" type="button" role="tab" aria-controls="betaMultiplierTabPane-Inf999" aria-selected="false"></button>
                         </li>
                     </template>
-                    <div class="tab-content modal-body" id="editInfectionFactorsTabContent"></div>
+                    <div class="tab-content modal-body"></div>
                     <template class="tab-pane-template">
                         <div class="tab-pane" id="betaMultiplierTabPane-Inf999" role="tabpanel" aria-labelledby="betaMultiplierTab-Inf999">...</div>
                     </template>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary formmodalsubmit" data-modalsubmittype="save">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- gamma multiplier modal--->
+        <div class="modal fade" id="editGammaMultiplierModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editGammaMultiplierModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header border-0">
+                        <h5 class="modal-title" id="editGammaMultiplierModalLabel">Group &gamma; Multipliers</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body"></div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="button" class="btn btn-primary formmodalsubmit" data-modalsubmittype="save">Save changes</button>
@@ -516,7 +559,7 @@
                             <button class="nav-link" id="backgoundTransitionsTab-Inf999" data-bs-toggle="tab" data-bs-target="#backgoundTransitionsTabPane-Inf999" type="button" role="tab" aria-controls="backgoundTransitionsTabPane-Inf999" aria-selected="false"></button>
                         </li>
                     </template>
-                    <div class="tab-content modal-body" id="editInfectionFactorsTabContent"></div>
+                    <div class="tab-content modal-body"></div>
                     <template class="tab-pane-template">
                         <div class="tab-pane" id="backgoundTransitionsTabPane-Inf999" role="tabpanel" aria-labelledby="backgoundTransitionsTab-Inf999">...</div>
                     </template>

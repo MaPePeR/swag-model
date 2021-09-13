@@ -24,8 +24,8 @@ var simulation = (function () {
                 return infections[infNumber].beta;
             }
 
-            function gamma(infNumber) {
-                return infections[infNumber].gamma;
+            function gamma(infNumber, infGroup) {
+                return infections[infNumber].gamma * model.getGammaMultipliers().get(infGroup, infNumber);
             }
 
             function factor(infNumber, infGroup, expGroup) {
@@ -55,7 +55,7 @@ var simulation = (function () {
                         result('next', bgNumberExposed, -1) + " = " + result('last', bgNumberExposed, -1) + "\n + ",
                         infections.map((_, infectionTypeNumber) => {
                             return groups.map((_, infectedBackgrund) => {
-                                return result('last', infectedBackgrund, infectionTypeNumber) + " * " +  (gamma(infectionTypeNumber) * transition(infectionTypeNumber, infectedBackgrund, bgNumberExposed));
+                                return result('last', infectedBackgrund, infectionTypeNumber) + " * " +  (gamma(infectionTypeNumber, infectedBackgrund) * transition(infectionTypeNumber, infectedBackgrund, bgNumberExposed));
                             }).join(" + ") +
                             /* and subtract newly infected people from susceptible */
                             "\n - " + result('next', bgNumberExposed, infectionTypeNumber);
@@ -63,7 +63,7 @@ var simulation = (function () {
                     ], infections.map(function(_, infectionTypeNumber) {
                         return result('next', bgNumberExposed, infectionTypeNumber) + " += " + result('last', bgNumberExposed, infectionTypeNumber) + " * " + (1 - /* groups.map((_, newGroup) => {
                             return (gamma(infectionTypeNumber) * transition(infectionTypeNumber, bgNumberExposed, newGroup));
-                        }).reduce((a, b) => a + b)*//* Assume the sum of all transitions is 1, to not interfere with gamma */ gamma(infectionTypeNumber)) + ";\n";
+                        }).reduce((a, b) => a + b)*//* Assume the sum of all transitions is 1, to not interfere with gamma */ gamma(infectionTypeNumber, bgNumberExposed)) + ";\n";
                     })
                 ));
             })),

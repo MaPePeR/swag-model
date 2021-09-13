@@ -195,6 +195,27 @@ var ui = (function () {
         }
     }(document.getElementById('editBetaMultiplierModal'));
 
+    new class extends FormModal {
+        onShow(event) {
+            this.table = this.table || new NumberInputTable(this.element.querySelector('.modal-body'), 'Group', 'Infection Type');
+            let groups = model.getGroupNames();
+            let infections = model.getInfectionTypes().map(type => type.name);
+
+            if (groups.length == 0 || infections.length == 0) {
+                this.table.el.innerHTML = 'You need to define groups and infections before you can define the gamma multipliers';
+                return;
+            }
+
+            this.table.setData(groups, infections, model.getGammaMultipliers());
+
+            this.table.redraw();
+
+        }
+        onSubmit(submitType, event) {
+            model.setGammaMultipliers(this.table.getData());
+        }
+    }(document.getElementById('editGammaMultiplierModal'));
+
     new class extends FormModalWithTabs {
         constructor(element) {
             super(element);

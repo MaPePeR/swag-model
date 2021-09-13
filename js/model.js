@@ -1,5 +1,6 @@
 /* eslint-env browser */
 /* global ui, Matrix */
+/* global d3 */
 
 'use strict';
 
@@ -7,6 +8,9 @@
 var model = (function () {
     const compressChars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+    const FLAG_HAVE_BETA_MULTIPLIERS = 1;
+    const FLAG_HAVE_GAMMA_MULTIPLIERS = 2;
+    const FLAG_HAVE_GLOBAL_BETA_POINTS = 4;
 
     class Model {
         constructor() {
@@ -14,6 +18,8 @@ var model = (function () {
             this.groups = [];
 
             this.betaMultipliers = [];
+
+            this.gammaMultipliers = new Matrix(0, 0);
 
             this.transitions = [];
 
@@ -38,16 +44,28 @@ var model = (function () {
             const N_I = this.infectionTypes.length;
             const N_B = this.groups.length;
             const N_GBP = this.globalBetaPoints.length;
+
+            const haveBeta = d3.some(this.betaMultipliers, d => d3.some(d.array, x => x != 1));
+            const haveGamma = d3.some(this.gammaMultipliers.array, x => x != 1);
+            const haveGlobalBeta = N_GBP > 0;
             const datasize =
-                4 +                    // Version Number/Meta
+                2 +                    // Version Number
+                2 +                    // Flags
                 4 +                    // Number of Infections(N_I)
                 N_I * (4 + 4) +        // Beta + Gamma
                 4 +                    // Number of Groups(N_B)
-                4 * N_I * N_B * N_B +  // Beta multipliers
+                (haveBeta ?
+                    4 * N_I * N_B * N_B// Beta multipliers
+                    : 0) +
+                (haveGamma ?
+                    4 * N_B * N_I      // Gamma multipliers
+                    : 0) +
                 4 * N_I * N_B * N_B +  // Transititios
                 4 * (N_I + 1) * N_B +  // Initial condition
-                4 +                    // Number of GlobalbetaPoints (N_GBP)
-                N_GBP * (4 + 4) +      // Global Beta Points x, y
+                (haveGlobalBeta ?
+                    4 +                // Number of GlobalbetaPoints (N_GBP)
+                    N_GBP * (4 + 4)    // Global Beta Points x, y
+                    : 0) +
                 4 +                    // Number of timesteps
                 4 +                    // Number of 4 Byte chars for 0 separated Names
                 combinedNames.length * 4;
@@ -55,16 +73,28 @@ var model = (function () {
             const view = new DataView(buffer);
             let offset = 0;
 
-            view.setInt32(4 * offset++, 1);
+            view.setInt16(4 * offset, 2); // Version
+            view.setInt16(4 * offset++ + 2,
+                (haveBeta ? FLAG_HAVE_BETA_MULTIPLIERS : 0) |
+                (haveGamma ? FLAG_HAVE_GAMMA_MULTIPLIERS : 0) |
+                (haveGlobalBeta ? FLAG_HAVE_GLOBAL_BETA_POINTS : 0) |
+                0
+            );
             view.setInt32(4 * offset++, N_I);
             for (const infection of this.infectionTypes) {
                 view.setFloat32(4 * offset++, infection.beta);
                 view.setFloat32(4 * offset++, infection.gamma);
             }
             view.setInt32(4 * offset++, N_B);
-            for (const infectionTypeNumber in this.infectionTypes) {
-                copyFloat32ArrayToView(view, offset, N_B * N_B, this.betaMultipliers[infectionTypeNumber].array);
-                offset += N_B * N_B;
+            if (haveBeta) {
+                for (const infectionTypeNumber in this.infectionTypes) {
+                    copyFloat32ArrayToView(view, offset, N_B * N_B, this.betaMultipliers[infectionTypeNumber].array);
+                    offset += N_B * N_B;
+                }
+            }
+            if (haveGamma) {
+                copyFloat32ArrayToView(view, offset, N_B * N_I, this.gammaMultipliers.array);
+                offset += N_B * N_I;
             }
             for (const infectionTypeNumber in this.infectionTypes) {
                 copyFloat32ArrayToView(view, offset, N_B * N_B, this.transitions[infectionTypeNumber].array);
@@ -72,10 +102,12 @@ var model = (function () {
             }
             copyFloat32ArrayToView(view, offset, ((N_I + 1) * N_B), this.initialCondition.array);
             offset += ((N_I + 1) * N_B);
-            view.setInt32(4 * offset++, N_GBP);
-            for (var globalBetaPoint of this.globalBetaPoints) {
-                view.setInt32(4 * offset++, globalBetaPoint.x);
-                view.setFloat32(4 * offset++, globalBetaPoint.y);
+            if (haveGlobalBeta) {
+                view.setInt32(4 * offset++, N_GBP);
+                for (var globalBetaPoint of this.globalBetaPoints) {
+                    view.setInt32(4 * offset++, globalBetaPoint.x);
+                    view.setFloat32(4 * offset++, globalBetaPoint.y);
+                }
             }
             view.setInt32(4 * offset++, this.timesteps);
             view.setInt32(4 * offset++, combinedNames.length);
@@ -124,8 +156,14 @@ var model = (function () {
             const view = new DataView(buffer);
             let offset = 0;
 
-            const version = view.getInt32(4 * offset++);
-            if (version != 1) {
+            let version = view.getInt16(4 * offset);
+            let flags = view.getInt16(4 * offset + 2);
+            offset++;
+            if (version == 0 && flags == 1) {
+                version = 1;
+                flags = 0;
+            }
+            if (version != 1 && version != 2) {
                 throw "Unknown version";
             }
             const N_I = view.getInt32(4 * offset++);
@@ -143,11 +181,27 @@ var model = (function () {
                 this.groups.push({number: i});
             }
             this.betaMultipliers = [];
-            for (const _ in this.infectionTypes) {
-                const m = new Matrix(N_B, N_B);
-                copyViewToFloat32Array(m.array, view, offset, N_B * N_B);
-                offset += N_B * N_B;
-                this.betaMultipliers.push(m);
+            if (version == 1 || (flags & FLAG_HAVE_BETA_MULTIPLIERS) > 0) {
+                for (const _ in this.infectionTypes) {
+                    const m = new Matrix(N_B, N_B);
+                    copyViewToFloat32Array(m.array, view, offset, N_B * N_B);
+                    offset += N_B * N_B;
+                    this.betaMultipliers.push(m);
+                }
+            } else {
+                for (const _ in this.infectionTypes) {
+                    const m = new Matrix(N_B, N_B);
+                    m.array.fill(1.0);
+                    this.betaMultipliers.push(m);
+                }
+            }
+            if (version > 1 && (flags & FLAG_HAVE_GAMMA_MULTIPLIERS) > 0) {
+                this.gammaMultipliers = new Matrix(N_B, N_I);
+                copyViewToFloat32Array(this.gammaMultipliers.array, view, offset, N_B * N_I);
+                offset += N_B * N_I;
+            } else {
+                this.gammaMultipliers = new Matrix(N_B, N_I);
+                this.gammaMultipliers.array.fill(1.0);
             }
             this.transitions = [];
             for (const _ in this.infectionTypes) {
@@ -159,13 +213,15 @@ var model = (function () {
             this.initialCondition = new Matrix(N_B, N_I + 1);
             copyViewToFloat32Array(this.initialCondition.array, view, offset,  (N_I + 1) * N_B);
             offset += ((N_I + 1) * N_B);
-            const N_GBP = view.getInt32(4 * offset++);
-            this.globalBetaPoints = [];
-            for (let i = 0; i < N_GBP; ++i) {
-                this.globalBetaPoints.push({
-                    x: view.getInt32(4 * offset++),
-                    y: view.getFloat32(4 * offset++),
-                });
+            if (version == 1 || (flags & FLAG_HAVE_GLOBAL_BETA_POINTS) > 0) {
+                const N_GBP = view.getInt32(4 * offset++);
+                this.globalBetaPoints = [];
+                for (let i = 0; i < N_GBP; ++i) {
+                    this.globalBetaPoints.push({
+                        x: view.getInt32(4 * offset++),
+                        y: view.getFloat32(4 * offset++),
+                    });
+                }
             }
             this.timesteps = view.getInt32(4 * offset++);
             const N_names = view.getInt32(4 * offset++);
@@ -217,6 +273,8 @@ var model = (function () {
 
             this.betaMultipliers.push(new Matrix(this.groups.length, this.groups.length));
 
+            this.gammaMultipliers.addColumn();
+
             this.transitions.push(new Matrix(this.groups.length, this.groups.length));
 
             this.initialCondition.addColumn();
@@ -234,6 +292,8 @@ var model = (function () {
             this.infectionTypes = this.infectionTypes.filter((item, i) => i != infectionTypeNumber);
 
             this.betaMultipliers = this.betaMultipliers.filter((item, i) => i != infectionTypeNumber);
+
+            this.gammaMultipliers.deleteColumn(infectionTypeNumber);
 
             this.transitions = this.transitions.filter((item, i) => i != infectionTypeNumber);
 
@@ -265,6 +325,8 @@ var model = (function () {
                 betaMultiplierMatrix.addRow();
             }
 
+            this.gammaMultipliers.addRow();
+
             for (const transitionMatrix of this.transitions) {
                 transitionMatrix.addColumn();
                 transitionMatrix.addRow();
@@ -292,6 +354,8 @@ var model = (function () {
                 betaMultiplierMatrix.deleteColumn(number);
                 betaMultiplierMatrix.deleteRow(number);
             }
+
+            this.gammaMultipliers.deleteRow(number);
 
             for (const transitionMatrix of this.transitions) {
                 transitionMatrix.deleteColumn(number);
@@ -321,6 +385,14 @@ var model = (function () {
 
         setBetaMultipliers(infectionTypeNumber, betaMultiplier) {
             this.betaMultipliers[infectionTypeNumber].setData(betaMultiplier);
+        }
+
+        getGammaMultipliers() {
+            return this.gammaMultipliers;
+        }
+
+        setGammaMultipliers(data) {
+            this.gammaMultipliers.setData(data);
         }
 
         setGroupTransitions(infectionTypeNumber, transitions) {
