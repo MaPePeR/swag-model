@@ -98,7 +98,7 @@
                 <div class="col explanation order-last order-lg-first">
                     <h2>Idea</h2>
                     <p>The idea behind this model is to <i>overcomplicate</i> a <a href="https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology#The_SIS_model" target="_blank">SIS model</a> in order to make it more flexible.</p>
-                    <p>This was achieved by adding the possibility for multiple infections, "Backgrounds" for the population, which can change the behaivior of an infection, a state machine that can change the "Background" after an infection and a global infection multiplier.</p>
+                    <p>This was achieved by adding the possibility for multiple infections, "Groups" for the population, which can change the behaivior of an infection, a state machine that can change the "Group" after an infection and a global infection multiplier.</p>
                     <p>This combination allows to model</p>
                     <ul>
                         <li>the <a href="https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology#The_SIRD_model" target="_blank">SIRD model</a></li>
@@ -109,10 +109,10 @@
                     </ul>
                     <p>
                         Not all envisaged features have been implemented, yet.
-                        In order to model vaccination or multiple emerging strains the model would need more ways to define outside influences that add newly infected people or move susceptible to a "vaccinated" background.
+                        In order to model vaccination or multiple emerging strains the model would need more ways to define outside influences that add newly infected people or move susceptible to a "vaccinated" group.
                     </p>
                     <p>
-                        Some UI and "quality of life" features are also missing, like the possibility to reorder and copy infections and backgrounds, the plot legend and the ability to specify plot colors.
+                        Some UI and "quality of life" features are also missing, like the possibility to reorder and copy infections and groups, the plot legend and the ability to specify plot colors.
                         (The area plot has tooltips!)
                     </p>
                 </div>
@@ -122,7 +122,7 @@
                             Disclaimer
                         </div>
                         <div class="card-body explanation">
-                            <p>This model has not been reviewed, yet, and was written in free time by a hobbyist-mathematician with no background or knowledge in virology or infectious diseases.</p>
+                            <p>This model has not been reviewed, yet, and was written in free time by a hobbyist-mathematician with no group or knowledge in virology or infectious diseases.</p>
                             <p>The website was only tested with Google Chrome and Firefox. It will definitely not work in Internet Explorer and Safari will probably also cause problems.</p>
                             <p>If you encounter any problems consider opening an issue on GitHub.</p>
                         </div>
@@ -170,7 +170,7 @@
                         The <span class="math"><i>&beta;</i></span> parameter controls how many infections a single person causes in a time step.
                         The <span class="math"><i>&gamma;</i></span> parameter controls for how long a person is infected.</p>
                     <p>A person in this model can only ever be infected by a single infection type.
-                        The <span class="math"><i>&beta;</i></span> parameter can be modified based on the backgrounds of the infected and exposed.</p>
+                        The <span class="math"><i>&beta;</i></span> parameter can be modified based on the groups of the infected and exposed.</p>
                 </div>
                 <div class="col mb-3">
                     <div class="card">
@@ -200,28 +200,28 @@
                         </template>
                     </div>
                 </div>
-                <!-- Define Backgrounds -->
+                <!-- Define Groups -->
                 <div class="col explanation">
-                    <h2>Backgrounds</h2>
-                    <p>Define different backgrounds that can control different parameters like contact rate, chance of infecting and infection or infection outcome.</p>
-                    <p>Examples for backgrounds are age groups, death after infection or immunities after previous infection or vaccination. You might want to create a cross product of multiple such backgrounds.<p>
+                    <h2>Groups</h2>
+                    <p>Define different groups that can control different parameters like contact rate, chance of infecting and infection or infection outcome.</p>
+                    <p>Examples for groups are age groups, death after infection or immunities after previous infection or vaccination. You might want to create a cross product of multiple such groups.<p>
                 </div>
                 <div class="col mb-3">
                     <div class="card">
                         <div class="card-header d-flex justify-content-between">
-                            <span>Backgrounds <span class="math ms-3"><i>N<sub>B</sub></i> = <span id="background-count"></span></span></span>
-                            <button type="button" name="button" class="btn btn-link py-0" aria-label="Add background" data-bs-toggle="modal" data-bs-target="#addEditBackgroundModal" data-background-number="new"><i class="bi bi-plus-square"></i></button>
+                            <span>Groups <span class="math ms-3"><i>N<sub>G</sub></i> = <span id="group-count"></span></span></span>
+                            <button type="button" name="button" class="btn btn-link py-0" aria-label="Add group" data-bs-toggle="modal" data-bs-target="#addEditGroupModal" data-group-number="new"><i class="bi bi-plus-square"></i></button>
                         </div>
                         <table class="table mb-0">
-                            <tbody id="backgroundTableBody">
-                                <tr><td colspan="4"><i class="text-muted">No backgrounds have been defined, yet</i></td></tr>
+                            <tbody id="groupTableBody">
+                                <tr><td colspan="4"><i class="text-muted">No groups have been defined, yet</i></td></tr>
                             </tbody>
                         </table>
-                        <template id="backgroundTableRowTemplate">
+                        <template id="groupTableRowTemplate">
                             <tr>
-                                <td class="background-name">Alpha</td>
+                                <td class="group-name">Alpha</td>
                                 <td class="text-end">
-                                    <button type="button" name="button" class="btn btn-link py-0 background-edit-button" aria-label="Edit infection type" data-bs-toggle="modal" data-bs-target="#addEditBackgroundModal" data-infection-type="1"><i class="bi bi-pencil"></i></button>
+                                    <button type="button" name="button" class="btn btn-link py-0 group-edit-button" aria-label="Edit infection type" data-bs-toggle="modal" data-bs-target="#addEditGroupModal" data-infection-type="1"><i class="bi bi-pencil"></i></button>
                                     <span class="reorder">
                                         <i class="bi bi-caret-up reorder-up text-primary"></i>
                                         <i class="bi bi-caret-down reorder-down text-primary"></i>
@@ -234,8 +234,8 @@
                 <!-- Define beta multipliers -->
                 <div class="col explanation">
                     <h3>&beta; multipliers</h3>
-                    <p>Define a multiplier that is applied to the <span class="math"><i>&beta;</i></span> value of an Infection based on the background of the infected and the background of the exposed.</p>
-                    <p>Can be used to simulate different contact rates between backgrounds or make some backgrounds less infectious or less likely to be infected.</p>
+                    <p>Define a multiplier that is applied to the <span class="math"><i>&beta;</i></span> value of an Infection based on the group of the infected and the group of the exposed.</p>
+                    <p>Can be used to simulate different contact rates between groups or make some groups less infectious or less likely to be infected.</p>
                 </div>
                 <div class="col mb-3">
                     <div class="card">
@@ -249,18 +249,18 @@
                     <!--<img src="..." class="card-img-bottom" alt="Heatmap showing the beta multipliers"/>-->
                 </div>
 
-                <!-- Define Background state machine -->
+                <!-- Define Group state machine -->
                 <div class="col explanation">
-                    <h3>Background transitions</h3>
-                    <p>Specify how the background changes after infection. This can be used to specify the portion of people that die because of infection or grant immunity through infection.</p>
+                    <h3>Group transitions</h3>
+                    <p>Specify how the group changes after infection. This can be used to specify the portion of people that die because of infection or grant immunity through infection.</p>
                     <p>Make sure that the sum of each row equals 1.0, otherwise the population count will change.</p>
                 </div>
                 <div class="col mb-3">
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex justify-content-between">
-                                <span>Background transitions <span class="math ms-3"><i>t<sub>i,j,k</sub></i></span></span>
-                                <button type="button" name="button" class="btn btn-link py-0" aria-label="Edit background transitions" data-bs-toggle="modal" data-bs-target="#editBackgroundTransitionsModal"><i class="bi bi-pencil"></i></button>
+                                <span>Group transitions <span class="math ms-3"><i>t<sub>i,j,k</sub></i></span></span>
+                                <button type="button" name="button" class="btn btn-link py-0" aria-label="Edit group transitions" data-bs-toggle="modal" data-bs-target="#editGroupTransitionsModal"><i class="bi bi-pencil"></i></button>
                             </div>
                             <!--<ul class="nav nav-tabs card-header-tabs">
                                 <li class="nav-item">
@@ -272,7 +272,7 @@
                             </ul>-->
                         </div>
                     </div>
-                    <!--<img src="..." class="card-img-bottom" alt="Heatmap showing the background transitions"/>-->
+                    <!--<img src="..." class="card-img-bottom" alt="Heatmap showing the group transitions"/>-->
                 </div>
 
 
@@ -280,7 +280,7 @@
                 <!-- Define initial condition & Date -->
                 <div class="col explanation">
                     <h3>Initial condition</h3>
-                    <p>The initial conditions control the initial distribution of people over the backgrounds and infections. The sum of this table will be used for the total population count.</p>
+                    <p>The initial conditions control the initial distribution of people over the groups and infections. The sum of this table will be used for the total population count.</p>
                 </div>
                 <div class="col mb-3">
                     <div class="card">
@@ -323,7 +323,7 @@
                         </td><td>
                         </td><td>
                             <span class="sum-display-inline">
-                                <span class="lim upper"><i>N<sub>B</sub></i></span>
+                                <span class="lim upper"><i>N<sub>G</sub></i></span>
                                 <span class="sum">&Sigma;</span>
                                 <span class="lim lower"><i>k</i>=1</span>
                             </span>
@@ -334,7 +334,7 @@
                             <i>I<sub>i,j</sub></i> &centerdot; 1
                             <span class="text-muted">,
                                 <span class="sum-display-inline" style="margin-left: 50px;">
-                                    <span class="lim upper"><i>N<sub>B</sub></i></span>
+                                    <span class="lim upper"><i>N<sub>G</sub></i></span>
                                     <span class="sum">&Sigma;</span>
                                     <span class="lim lower"><i>l</i>=1</span>
                                 </span>
@@ -355,7 +355,7 @@
                             </span>
                         </td><td>
                             <span class="sum-display-inline">
-                                <span class="lim upper"><i>N<sub>B</sub></i></span>
+                                <span class="lim upper"><i>N<sub>G</sub></i></span>
                                 <span class="sum">&Sigma;</span>
                                 <span class="lim lower"><i>k</i>=1</span>
                             </span>
@@ -370,7 +370,7 @@
                                 <i>&gamma;<sub>i</sub></i> &centerdot;
                         </td><td>
                             <span class="sum-display-inline">
-                                <span class="lim upper"><i>N<sub>B</sub></i></span>
+                                <span class="lim upper"><i>N<sub>G</sub></i></span>
                                 <span class="sum">&Sigma;</span>
                                 <span class="lim lower"><i>m</i>=1</span>
                             </span>
@@ -389,17 +389,17 @@
                     <h3>Result</h3>
                     <figure class="figure">
                         <svg id="plotArea"></svg>
-                        <figcaption class="figure-caption">Stacked area plot showing the amount of people in each background and their susceptible/infected state.</figcaption>
+                        <figcaption class="figure-caption">Stacked area plot showing the amount of people in each group and their susceptible/infected state.</figcaption>
                     </figure>
 
                     <figure class="figure">
                         <svg id="plotLines"></svg>
-                        <figcaption class="figure-caption">Line plot showing the amount of people in each background </figcaption>
+                        <figcaption class="figure-caption">Line plot showing the amount of people in each group </figcaption>
                     </figure>
 
                     <figure class="figure">
                         <svg id="plotLinesCombined"></svg>
-                        <figcaption class="figure-caption">Line plot showing the total amount of people over all backgrounds that are susceptible/infected.</figcaption>
+                        <figcaption class="figure-caption">Line plot showing the total amount of people over all groups that are susceptible/infected.</figcaption>
                     </figure>
                 </div>
 
@@ -445,23 +445,23 @@
             </div>
         </div>
 
-        <!-- New background modall--->
-        <div class="modal fade" id="addEditBackgroundModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addEditBackgroundModalLabel" aria-hidden="true">
+        <!-- New group modall--->
+        <div class="modal fade" id="addEditGroupModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addEditGroupModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="addEditBackgroundModalLabel">Modal title</h5>
+                        <h5 class="modal-title" id="addEditGroupModalLabel">Modal title</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="backgroundName" class="form-label">Name</label>
-                            <input type="text" class="form-control" id="backgroundName" placeholder="Background name">
+                            <label for="groupName" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="groupName" placeholder="Group name">
                         </div>
                     </div>
                     <div class="modal-footer d-flex justify-content-between">
                         <span>
-                            <button type="button" class="btn btn-danger formmodalsubmit" data-modalsubmittype="delete" aria-label="Delete background"><i class="bi bi-trash"></i></button>
+                            <button type="button" class="btn btn-danger formmodalsubmit" data-modalsubmittype="delete" aria-label="Delete group"><i class="bi bi-trash"></i></button>
                         </span>
                         <span>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -498,12 +498,12 @@
             </div>
         </div>
 
-        <!-- background transitions modal--->
-        <div class="modal fade" id="editBackgroundTransitionsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editBackgroundTransitionsModalLabel" aria-hidden="true">
+        <!-- group transitions modal--->
+        <div class="modal fade" id="editGroupTransitionsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editGroupTransitionsModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header border-0">
-                        <h5 class="modal-title" id="editBackgroundTransitionsModalLabel">Edit background transitions</h5>
+                        <h5 class="modal-title" id="editGroupTransitionsModalLabel">Edit group transitions</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <ul class="nav nav-tabs" role="tablist"></ul>
@@ -529,7 +529,7 @@
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editInitialConditionsModalLabel">Background contact matrix</h5>
+                        <h5 class="modal-title" id="editInitialConditionsModalLabel">Group contact matrix</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" id="editInitialConditionsModalBody">
@@ -594,8 +594,8 @@
                         <p class="modeldescription"></p>
                         <h6>Infection types</h6>
                         <p class="modelinfections"></p>
-                        <h6>Backgrounds</h6>
-                        <p class="backgrounds"></p>
+                        <h6>Groups</h6>
+                        <p class="groups"></p>
                         <h6>&beta; multipliers</h6>
                         <p class="betaMultipliers"></p>
                         <h6>Transitions</h6>
@@ -661,13 +661,13 @@
             if(!loadFromHash()) {
                 model.addInfectionType({name: 'Inf1', beta: 1.5, gamma: 0.7});
                 //model.addInfectionType({name: 'Inf2', beta: 2, gamma: 0.6});
-                model.addBackground('Bg1');
-                //model.addBackground('Bg2')
-                //model.addBackground('Bg3')
+                model.addGroup('Bg1');
+                //model.addGroup('Bg2')
+                //model.addGroup('Bg3')
 
                 model.setBetaMultipliers(0, [1]);
                 model.setInitialCondition([999,1]);
-                model.setBackgroundTransitions(0, [1]);
+                model.setGroupTransitions(0, [1]);
 
                 model.setGlobalBetaPoints([
                     {x: 0, y: 1},

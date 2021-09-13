@@ -174,13 +174,13 @@ var plot = (function () {
             document.getElementById('resultrow').style.display = 'block';
             this.plotArea(data);
             this.plotLines(data);
-            this.plotLinesCombinedBackgrounds(data);
+            this.plotLinesCombinedGroups(data);
         }
         plotArea(data) {
             const infections = model.getInfectionTypes();
-            const backgrounds = model.getBackgrounds();
+            const groups = model.getGroups();
 
-            const timestepsize =  (infections.length + 1) * backgrounds.length;
+            const timestepsize =  (infections.length + 1) * groups.length;
             const timesteps = data.length / timestepsize;
 
             // append the svg object to the body of the page
@@ -188,7 +188,7 @@ var plot = (function () {
 
             // List of groups = header of the csv files
             const keys = d3.range(timestepsize).map(d => {
-                return (infections.length + 1) * (d % backgrounds.length) + Math.floor(d / backgrounds.length);
+                return (infections.length + 1) * (d % groups.length) + Math.floor(d / groups.length);
             });
 
             //stack the data?
@@ -227,15 +227,15 @@ var plot = (function () {
                     .append('title').html((d, i, a) => {
                         const inf = d.key % (infections.length + 1);
                         const bg = Math.floor(d.key / (infections.length + 1));
-                        return backgrounds[bg].name + " " + (inf == 0 ? "Uninfected" : infections[inf - 1].name);
+                        return groups[bg].name + " " + (inf == 0 ? "Uninfected" : infections[inf - 1].name);
                     });
         }
 
         plotLines(data) {
             const infections = model.getInfectionTypes();
-            const backgrounds = model.getBackgrounds();
+            const groups = model.getGroups();
 
-            const timestepsize =  (infections.length + 1) * backgrounds.length;
+            const timestepsize =  (infections.length + 1) * groups.length;
             const timesteps = data.length / timestepsize;
 
             const svg = this.makeSVG('#plotLines');
@@ -268,26 +268,26 @@ var plot = (function () {
                     .append('title').html((d, i) => {
                         const inf = i % (infections.length + 1);
                         const bg = Math.floor(i / (infections.length + 1));
-                        return backgrounds[bg].name + " " + (inf == 0 ? "Uninfected" : infections[inf - 1].name);
+                        return groups[bg].name + " " + (inf == 0 ? "Uninfected" : infections[inf - 1].name);
                     });
         }
 
-        plotLinesCombinedBackgrounds(data) {
+        plotLinesCombinedGroups(data) {
             const infections = model.getInfectionTypes();
-            const backgrounds = model.getBackgrounds();
+            const groups = model.getGroups();
 
-            const timestepsize =  (infections.length + 1) * backgrounds.length;
+            const timestepsize =  (infections.length + 1) * groups.length;
             const timesteps = data.length / timestepsize;
 
             const svg = this.makeSVG('#plotLinesCombined');
 
-            const n_groups = infections.length + 1;
+            const n_infectionstates = infections.length + 1;
 
-            const sums = new Float32Array(n_groups * timesteps);
+            const sums = new Float32Array(n_infectionstates * timesteps);
             for (let i = 0; i < timesteps; i++) {
                 for (let infection = 0; infection < infections.length + 1; infection++) {
-                    for (let bg = 0; bg < backgrounds.length; bg++) {
-                        sums[i * n_groups + infection] += data[i * timestepsize + bg * n_groups + infection];
+                    for (let bg = 0; bg < groups.length; bg++) {
+                        sums[i * n_infectionstates + infection] += data[i * timestepsize + bg * n_infectionstates + infection];
                     }
                 }
             }
@@ -315,7 +315,7 @@ var plot = (function () {
                     .attr("stroke", d => color(d))
                     .attr("d", series => (d3.line()
                             .x(d => x(d))
-                            .y(d => y(sums[d * n_groups + series]))(xvalues))
+                            .y(d => y(sums[d * n_infectionstates + series]))(xvalues))
                     )
                     .append('title').html((d, i) => {
                         return (d == 0 ? "Uninfected" : infections[d - 1].name);

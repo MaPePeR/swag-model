@@ -2,7 +2,7 @@
     "name": "SIRD model",
     "description": "A simple SIRD model example",
     "infectionTypes": "Only one infection with β=0.4 and γ=0.04 is defined.",
-    "backgrounds": "There are three backgrounds. One for the Susceptible, one for Recovered and one for Deceased.",
+    "groups": "There are three groups. One for the Susceptible, one for Recovered and one for Deceased.",
     "betaMultipliers": "The beta multipliers are set up in a way, that only the susceptible can infect and be infected.",
     "transitions": "After infection the susceptible are split 87.5% to Recovered and 12.5% to Deceased. This coresponds to γ = 0.04 · 0.875 = 0.35 and μ = 0.04 · 0.125 = 0.05 in traditional SIRD.",
     "initialCondition": "We start with 997 susceptible and 3 infected people.",

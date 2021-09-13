@@ -94,37 +94,37 @@ var ui = (function () {
     new class extends FormModal {
         onShow(event) {
             var button = event.relatedTarget;
-            this.background = button.getAttribute('data-background-number');
+            this.group = button.getAttribute('data-group-number');
             var modalTitle = this.element.querySelector('.modal-title');
 
-            if (this.background == "new") {
-                modalTitle.textContent = 'New background';
-                this.element.querySelector('#backgroundName').value = '';
+            if (this.group == "new") {
+                modalTitle.textContent = 'New group';
+                this.element.querySelector('#groupName').value = '';
                 this.element.querySelector('.formmodalsubmit[data-modalsubmittype="delete"]').classList.add('d-none');
             } else {
-                this.background = parseInt(this.background, 10);
-                modalTitle.textContent = 'Edit background';
-                let background = model.getBackground(this.background);
-                this.element.querySelector('#backgroundName').value = background.name;
+                this.group = parseInt(this.group, 10);
+                modalTitle.textContent = 'Edit group';
+                let group = model.getGroup(this.group);
+                this.element.querySelector('#groupName').value = group.name;
                 this.element.querySelector('.formmodalsubmit[data-modalsubmittype="delete"]').classList.remove('d-none');
             }
         }
 
         onSubmit(submitType, event) {
             if (submitType == 'save') {
-                let backgroundName = this.element.querySelector('#backgroundName').value;
-                if (this.background === "new") {
-                    model.addBackground(backgroundName);
+                let groupName = this.element.querySelector('#groupName').value;
+                if (this.group === "new") {
+                    model.addGroup(groupName);
                 } else {
-                    model.updateBackground(this.background, backgroundName);
+                    model.updateGroup(this.group, groupName);
                 }
             } else if (submitType == 'delete') {
-                if (this.background !== 'new') {
-                    model.deleteBackground(this.background);
+                if (this.group !== 'new') {
+                    model.deleteGroup(this.group);
                 }
             }
         }
-    }(document.getElementById('addEditBackgroundModal'));
+    }(document.getElementById('addEditGroupModal'));
 
     class FormModalWithTabs extends FormModal {
         onShow(event) {
@@ -182,9 +182,9 @@ var ui = (function () {
             return tabs;
         }
         fillPane(paneElement, infectionTypeNumber, title) {
-            let backgrounds = model.getBackgroundNames();
+            let groups = model.getGroupNames();
             let table = new NumberInputTable(paneElement, 'Uninfected', 'Exposed to ' + title);
-            table.setData(backgrounds, backgrounds, model.getBetaMultipliers(infectionTypeNumber));
+            table.setData(groups, groups, model.getBetaMultipliers(infectionTypeNumber));
             table.redraw();
             this.tables.push(table);
         }
@@ -213,15 +213,15 @@ var ui = (function () {
             return tabs;
         }
         fillPane(paneElement, infectionTypeNumber, title) {
-            let backgrounds = model.getBackgroundNames();
-            let table = new NumberInputTable(paneElement, 'Background before', 'Background after Infection with ' + title);
-            table.setData(backgrounds, backgrounds, model.getBackgroundTransitions(infectionTypeNumber));
+            let groups = model.getGroupNames();
+            let table = new NumberInputTable(paneElement, 'Group before', 'Group after Infection with ' + title);
+            table.setData(groups, groups, model.getGroupTransitions(infectionTypeNumber));
             table.redraw();
             this.tables.push(table);
         }
         onSubmit(submitType, event) {
             this.tables.forEach((table, infectionTypeNumber) => {
-                model.setBackgroundTransitions(infectionTypeNumber, table.getData());
+                model.setGroupTransitions(infectionTypeNumber, table.getData());
             });
         }
 
@@ -240,20 +240,20 @@ var ui = (function () {
                 }
             }
         }
-    }(document.getElementById('editBackgroundTransitionsModal'));
+    }(document.getElementById('editGroupTransitionsModal'));
 
     new class extends FormModal {
         onShow(event) {
-            this.table = this.table || new NumberInputTable(document.getElementById('editInitialConditionsModalBody'), 'Background', 'People susceptible or infected');
-            let backgrounds = model.getBackgroundNames();
+            this.table = this.table || new NumberInputTable(document.getElementById('editInitialConditionsModalBody'), 'Group', 'People susceptible or infected');
+            let groups = model.getGroupNames();
             let infections = model.getInfectionTypes().map(type => type.name);
 
-            if (backgrounds.length == 0) {
-                this.table.el.innerHTML = 'You need to define backgrounds before you can define the initial conditions';
+            if (groups.length == 0) {
+                this.table.el.innerHTML = 'You need to define groups before you can define the initial conditions';
                 return;
             }
 
-            this.table.setData(backgrounds, ['Susceptible'].concat(infections), model.getInitialCondition());
+            this.table.setData(groups, ['Susceptible'].concat(infections), model.getInitialCondition());
 
             this.table.redraw();
 
@@ -315,7 +315,7 @@ var ui = (function () {
             this.element.querySelector('.modal-title').innerText = this.libraryentry.name;
             t.content.querySelector('.modeldescription').innerText = this.libraryentry.description;
             t.content.querySelector('.modelinfections').innerText = this.libraryentry.infectionTypes;
-            t.content.querySelector('.backgrounds').innerText = this.libraryentry.backgrounds;
+            t.content.querySelector('.groups').innerText = this.libraryentry.groups;
             t.content.querySelector('.betaMultipliers').innerText = this.libraryentry.betaMultipliers;
             t.content.querySelector('.transitions').innerText = this.libraryentry.transitions;
             t.content.querySelector('.initialCondition').innerText = this.libraryentry.initialCondition;
@@ -411,33 +411,33 @@ var ui = (function () {
 
     }
 
-    function recreateBackgroundTable() {
-        let t = document.getElementById('backgroundTableRowTemplate');
-        let name = t.content.querySelector('.background-name');
-        let editButton = t.content.querySelector('.background-edit-button');
+    function recreateGroupTable() {
+        let t = document.getElementById('groupTableRowTemplate');
+        let name = t.content.querySelector('.group-name');
+        let editButton = t.content.querySelector('.group-edit-button');
 
-        let backgrounds = model.getBackgrounds();
+        let groups = model.getGroups();
 
-        document.getElementById('background-count').innerText = backgrounds.length;
+        document.getElementById('group-count').innerText = groups.length;
 
-        if (backgrounds.length == 0) {
-            document.getElementById('backgroundTableBody').innerHTML = '<tr><td colspan="4"><i class="text-muted">No backgrounds have been defined, yet</i></td></tr>';
+        if (groups.length == 0) {
+            document.getElementById('groupTableBody').innerHTML = '<tr><td colspan="4"><i class="text-muted">No groups have been defined, yet</i></td></tr>';
         } else {
             let fragment = document.createDocumentFragment();
 
-            backgrounds.forEach((background, i) => {
-                name.innerText = background.name;
-                editButton.dataset.backgroundNumber = background.number;
+            groups.forEach((group, i) => {
+                name.innerText = group.name;
+                editButton.dataset.groupNumber = group.number;
                 fragment.appendChild(document.importNode(t.content, true));
             });
 
-            document.getElementById('backgroundTableBody').replaceChildren(fragment);
+            document.getElementById('groupTableBody').replaceChildren(fragment);
         }
     }
 
     return {
         recreateInfectionTypeTable: recreateInfectionTypeTable,
-        recreateBackgroundTable: recreateBackgroundTable,
+        recreateGroupTable: recreateGroupTable,
         updateTimesteps: function() {
             const el = document.getElementById('timestepnumberinput');
             const timesteps = model.getTimesteps();

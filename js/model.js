@@ -11,7 +11,7 @@ var model = (function () {
     class Model {
         constructor() {
             this.infectionTypes = [];
-            this.backgrounds = [];
+            this.groups = [];
 
             this.betaMultipliers = [];
 
@@ -33,16 +33,16 @@ var model = (function () {
 
             const combinedNames = [].concat(
                 this.infectionTypes.map(i => i.name),
-                this.backgrounds.map(i => i.name)
+                this.groups.map(i => i.name)
             ).join("\0");
             const N_I = this.infectionTypes.length;
-            const N_B = this.backgrounds.length;
+            const N_B = this.groups.length;
             const N_GBP = this.globalBetaPoints.length;
             const datasize =
                 4 +                    // Version Number/Meta
                 4 +                    // Number of Infections(N_I)
                 N_I * (4 + 4) +        // Beta + Gamma
-                4 +                    // Number of Backgrounds(N_B)
+                4 +                    // Number of Groups(N_B)
                 4 * N_I * N_B * N_B +  // Beta multipliers
                 4 * N_I * N_B * N_B +  // Transititios
                 4 * (N_I + 1) * N_B +  // Initial condition
@@ -138,9 +138,9 @@ var model = (function () {
                 });
             }
             const N_B = view.getInt32(4 * offset++);
-            this.backgrounds = [];
+            this.groups = [];
             for (let i = 0; i < N_B; ++i) {
-                this.backgrounds.push({number: i});
+                this.groups.push({number: i});
             }
             this.betaMultipliers = [];
             for (const _ in this.infectionTypes) {
@@ -179,11 +179,11 @@ var model = (function () {
                 this.infectionTypes[i].name = names[i];
             }
             for (; i < N_B + N_I; ++i) {
-                this.backgrounds[i  - N_I].name = names[i];
+                this.groups[i  - N_I].name = names[i];
             }
 
             ui.recreateInfectionTypeTable();
-            ui.recreateBackgroundTable();
+            ui.recreateGroupTable();
             ui.updateTimesteps();
             ui.updateInitialConditionCard();
         }
@@ -215,9 +215,9 @@ var model = (function () {
             let newInfectionType = this.createInfectionType(this.infectionTypes.length, infectionType);
             this.infectionTypes.push(newInfectionType);
 
-            this.betaMultipliers.push(new Matrix(this.backgrounds.length, this.backgrounds.length));
+            this.betaMultipliers.push(new Matrix(this.groups.length, this.groups.length));
 
-            this.transitions.push(new Matrix(this.backgrounds.length, this.backgrounds.length));
+            this.transitions.push(new Matrix(this.groups.length, this.groups.length));
 
             this.initialCondition.addColumn();
 
@@ -256,9 +256,9 @@ var model = (function () {
         }
 
 
-        addBackground(backgroundName) {
-            let number = this.backgrounds.length;
-            this.backgrounds.push({name: backgroundName, number: number});
+        addGroup(groupName) {
+            let number = this.groups.length;
+            this.groups.push({name: groupName, number: number});
 
             for (const betaMultiplierMatrix of this.betaMultipliers) {
                 betaMultiplierMatrix.addColumn();
@@ -272,21 +272,21 @@ var model = (function () {
 
             this.initialCondition.addRow();
 
-            ui.recreateBackgroundTable();
+            ui.recreateGroupTable();
         }
 
-        updateBackground(number, backgroundName) {
-            this.backgrounds[number] = {name: backgroundName, number: number};
-            ui.recreateBackgroundTable();
+        updateGroup(number, groupName) {
+            this.groups[number] = {name: groupName, number: number};
+            ui.recreateGroupTable();
         }
 
-        deleteBackground(number) {
-            this.backgrounds.forEach(function (type, i) {
+        deleteGroup(number) {
+            this.groups.forEach(function (type, i) {
                 if (type.number > number) {
                     type.number -= 1;
                 }
             });
-            this.backgrounds = this.backgrounds.filter((item, i) => i != number);
+            this.groups = this.groups.filter((item, i) => i != number);
 
             for (const betaMultiplierMatrix of this.betaMultipliers) {
                 betaMultiplierMatrix.deleteColumn(number);
@@ -300,19 +300,19 @@ var model = (function () {
 
             this.initialCondition.deleteRow(number);
 
-            ui.recreateBackgroundTable();
+            ui.recreateGroupTable();
         }
 
-        getBackground(number) {
-            return this.backgrounds[number];
+        getGroup(number) {
+            return this.groups[number];
         }
 
-        getBackgrounds() {
-            return this.backgrounds.map(type => Object.assign({}, type));
+        getGroups() {
+            return this.groups.map(type => Object.assign({}, type));
         }
 
-        getBackgroundNames() {
-            return this.getBackgrounds().map(bg => bg.name);
+        getGroupNames() {
+            return this.getGroups().map(bg => bg.name);
         }
 
         getBetaMultipliers(infectionTypeNumber) {
@@ -323,11 +323,11 @@ var model = (function () {
             this.betaMultipliers[infectionTypeNumber].setData(betaMultiplier);
         }
 
-        setBackgroundTransitions(infectionTypeNumber, transitions) {
+        setGroupTransitions(infectionTypeNumber, transitions) {
             this.transitions[infectionTypeNumber].setData(transitions);
         }
 
-        getBackgroundTransitions(infectionTypeNumber) {
+        getGroupTransitions(infectionTypeNumber) {
             return this.transitions[infectionTypeNumber];
         }
 
