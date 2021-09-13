@@ -208,7 +208,7 @@ var plot = (function () {
 
             // color palette
             const color = d3.scaleOrdinal()
-                .domain(keys)
+                .domain(d3.range(timestepsize))
                 .range(d3.schemeCategory10);
 
             const y = this.makeYaxis(svg, [0, max]);
@@ -218,7 +218,7 @@ var plot = (function () {
                 .selectAll("mylayers")
                 .data(stackedData)
                 .join("path")
-                    .style("fill", (d, i) => color(i))
+                    .style("fill", (d, i) => color(d.key))
                     .attr("d", d3.area()
                         .x((d, i) => x(d.data))
                         .y0(d => y(d[0]))
