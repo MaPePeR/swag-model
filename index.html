@@ -98,13 +98,13 @@
                 <div class="col explanation order-last order-lg-first">
                     <h2>Idea</h2>
                     <p>The idea behind this model is to <s>overcomplicate</s> <i>extend</i> a <a href="https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology#The_SIS_model" target="_blank">SIS model</a> in order to make it more flexible.</p>
-                    <p>This was achieved by adding the possibility for multiple infections, "Groups" for the population, which can change the behaivior of an infection, a state machine that can change the "Group" after an infection and a global infection multiplier.</p>
+                    <p>This was achieved by adding the possibility for multiple infections, "Groups" for the population, which can change the behavior of an infection, a state machine that can change the "Group" after an infection and a global infection multiplier.</p>
                     <p>This combination allows to model</p>
                     <ul>
                         <li>the <a href="https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology#The_SIRD_model" target="_blank">SIRD model</a></li>
                         <li>Age groups or people with preexisting conditions</li>
                         <li>Partial immunity after infection</li>
-                        <li>Saisionality or interventions</li>
+                        <li>Seasonality or interventions</li>
                         <li>...</li>
                     </ul>
                     <p>
@@ -233,7 +233,7 @@
                 </div>
                 <!-- Define beta multipliers -->
                 <div class="col explanation">
-                    <h3>&beta; multipliers</h3>
+                    <h3>Group &beta; multipliers</h3>
                     <p>Define a multiplier that is applied to the <span class="math"><i>&beta;</i></span> value of an Infection based on the group of the infected and the group of the exposed.</p>
                     <p>Can be used to simulate different contact rates between groups or make some groups less infectious or less likely to be infected.</p>
                 </div>
@@ -241,7 +241,7 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="d-flex justify-content-between">
-                                <span>&beta; multipliers <span class="math ms-3"><i>b<sub>i,j,k</sub></i></span></span>
+                                <span>Group &beta; multipliers <span class="math ms-3"><i>b<sub>i,j,k</sub></i></span></span>
                                 <button type="button" name="button" class="btn btn-link py-0" aria-label="Edit beta multipliers" data-bs-toggle="modal" data-bs-target="#editBetaMultiplierModal"><i class="bi bi-pencil"></i></button>
                             </div>
                         </div>
@@ -295,7 +295,7 @@
                 <!-- Define outside influences & events -->
                 <div class="col explanation">
                     <h3>Global &beta; multiplier</h3>
-                    <p>The global beta multiplier is applied to all infections equally, but can change over time. It can be used to model saisional effects or interventions.</p>
+                    <p>The global beta multiplier is applied to all infections equally, but can change over time. It can be used to model seasonal effects or interventions.</p>
                 </div>
                 <div class="col mb-3">
                     <div class="card">
@@ -315,7 +315,7 @@
                 <!-- Calculate/Plot -->
                 <div class="col-12">
                     <h3>Simulation</h3>
-                    <p>The simulation uses these formula to advance from one timestep to the next:</p>
+                    <p>The simulation uses these formulas to advance from one time step to the next:</p>
                     <center><table class="math">
                         <tr><td>
                             d<i>I<sub>i,j</sub></i>/d<i>t</i>
@@ -389,7 +389,7 @@
                 <div class="col-12">
                     <h3>Result</h3>
                     <div class="alert alert-danger" id="nanwarning" style="display: none;">
-                        <strong>Error:</strong> there were NaN's in the result. 
+                        <strong>Error:</strong> there were NaN's in the result.
                     </div>
                     <figure class="figure">
                         <svg id="plotArea"></svg>
@@ -481,7 +481,7 @@
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header border-0">
-                        <h5 class="modal-title" id="editBetaMultiplierModalLabel">&beta; Multipliers</h5>
+                        <h5 class="modal-title" id="editBetaMultiplierModalLabel">Group &beta; Multipliers</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <ul class="nav nav-tabs" role="tablist"></ul>
@@ -600,7 +600,7 @@
                         <p class="modelinfections"></p>
                         <h6>Groups</h6>
                         <p class="groups"></p>
-                        <h6>&beta; multipliers</h6>
+                        <h6>Group &beta; multipliers</h6>
                         <p class="betaMultipliers"></p>
                         <h6>Transitions</h6>
                         <p class="transitions"></p>

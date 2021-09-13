@@ -1,10 +1,10 @@
 {
     "name": "SIRD model",
-    "description": "A SIS Model with two infections and we use groups to track which infection hits people first.",
-    "infectionTypes": "Two infections with different β and γ values. The first infection has a larger β and larger γ, so it is more infecitous per timestep, but the infection doesn't last as long.",
-    "groups": "There are three groups. One for the Susceptible, one for people that were infected with Inf1 first and another one for people that got Inf2 as their first infection.",
+    "description": "A SIS Model with two infections, and we use groups to track which infection hits people first.",
+    "infectionTypes": "Two infections with different β and γ values. The first infection has a larger β and larger γ, so it is more infectious per time step, but the infection doesn't last as long.",
+    "groups": "There are three groups. One for the Susceptible, one for people that were infected with Inf1 first, and another one for people that got Inf2 as their first infection.",
     "betaMultipliers": "The beta multipliers are set to 1, so all groups can infect all groups equally.",
-    "transitions": "Susceptible that get newly infected are moved to the group that maches the infection type and then remain in that group.",
+    "transitions": "Susceptible that get newly infected are moved to the group that matches the infection type and then remain in that group.",
     "initialCondition": "We start with 998 susceptible and 1 infected person for each infection type.",
     "globalBetaMultiplier": "No global beta multiplier is used.",
     "model": "*2Q*1I/w*0PzMzMz7MzM09I9cK*2z+*1/g*0P4*0D+*1/g*0P4*0D+*1/g*0P4*0D+*1/g*0P4*0D+*1/g*0P4*0D+*1/g*0P4*6/g*B/g*GP4*BP4*6/g*GP4*0ER5gAA/g*0P4*Z*3Bk*1Kw*0Ek*0Bu*1Zg*0DE*6SQ*0G4*0Bm*1Mg*5BT*1dQ*0HM*0Bj*1ZQ*0H*1B0*1aQ*0GI*0Bs*1ZQ*5BG*1aQ*0HI*0Bz*1d*1C*1BJ*1bg*0GY*1x*6EY*0Bp*1cg*0HM*0B0*1I*1Ek*0Bu*1Zg*0DI="
