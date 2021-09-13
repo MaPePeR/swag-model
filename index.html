@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title></title>
+        <title>SWAG model: SIS with automaton groups</title>
 
         <!-- Bootstrap CSS and Font -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
@@ -93,11 +93,11 @@
     </head>
     <body class="mb-3">
         <div class="container">
-            <h1>Title...</h1>
+            <h1>SWAG model <small class="text-muted">SIS with automaton groups</small></h1>
             <div class="row row-cols-1 row-cols-lg-2">
                 <div class="col explanation order-last order-lg-first">
                     <h2>Idea</h2>
-                    <p>The idea behind this model is to <i>overcomplicate</i> a <a href="https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology#The_SIS_model" target="_blank">SIS model</a> in order to make it more flexible.</p>
+                    <p>The idea behind this model is to <s>overcomplicate</s> <i>extend</i> a <a href="https://en.wikipedia.org/wiki/Compartmental_models_in_epidemiology#The_SIS_model" target="_blank">SIS model</a> in order to make it more flexible.</p>
                     <p>This was achieved by adding the possibility for multiple infections, "Groups" for the population, which can change the behaivior of an infection, a state machine that can change the "Group" after an infection and a global infection multiplier.</p>
                     <p>This combination allows to model</p>
                     <ul>
@@ -109,11 +109,11 @@
                     </ul>
                     <p>
                         Not all envisaged features have been implemented, yet.
-                        In order to model vaccination or multiple emerging strains the model would need more ways to define outside influences that add newly infected people or move susceptible to a "vaccinated" group.
+                        In order to model vaccination or multiple emerging strains the model would need more ways to define outside influences that add newly infected people or move susceptible to a "vaccinated" group after some amount of time.
                     </p>
                     <p>
                         Some UI and "quality of life" features are also missing, like the possibility to reorder and copy infections and groups, the plot legend and the ability to specify plot colors.
-                        (The area plot has tooltips!)
+                        (The plots have tooltips, though)
                     </p>
                 </div>
                 <div class="col mb-3">
@@ -203,7 +203,7 @@
                 <!-- Define Groups -->
                 <div class="col explanation">
                     <h2>Groups</h2>
-                    <p>Define different groups that can control different parameters like contact rate, chance of infecting and infection or infection outcome.</p>
+                    <p>Define different groups that can control different parameters of infections/infectiousness and infection outcome.</p>
                     <p>Examples for groups are age groups, death after infection or immunities after previous infection or vaccination. You might want to create a cross product of multiple such groups.<p>
                 </div>
                 <div class="col mb-3">
@@ -315,6 +315,7 @@
                 <!-- Calculate/Plot -->
                 <div class="col-12">
                     <h3>Simulation</h3>
+                    <p>The simulation uses these formula to advance from one timestep to the next:</p>
                     <center><table class="math">
                         <tr><td>
                             d<i>I<sub>i,j</sub></i>/d<i>t</i>
