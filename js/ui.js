@@ -416,7 +416,7 @@ var ui = (function () {
         document.getElementById('infection-type-count').innerText = infectionTypes.length;
 
         if (infectionTypes.length == 0) {
-            document.getElementById('infectionTypeTableBody').innerHTML = '<tr><td colspan="4"><i class="text-muted">No infection types have been defined, yet</i></td></tr>';
+            document.getElementById('infectionTypeTableBody').innerHTML = '<div class="list-group-item disabled"><i>No infection types have been defined, yet</i></div>';
         } else {
             let fragment = document.createDocumentFragment();
 
