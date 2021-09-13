@@ -388,6 +388,9 @@
             <div class="row" id="resultrow" style="display: none;">
                 <div class="col-12">
                     <h3>Result</h3>
+                    <div class="alert alert-danger" id="nanwarning" style="display: none;">
+                        <strong>Error:</strong> there were NaN's in the result. 
+                    </div>
                     <figure class="figure">
                         <svg id="plotArea"></svg>
                         <figcaption class="figure-caption">Stacked area plot showing the amount of people in each group and their susceptible/infected state.</figcaption>

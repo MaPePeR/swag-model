@@ -368,6 +368,11 @@ var ui = (function () {
         document.getElementById('startsimulatonbutton').addEventListener('click', function () {
             const N = model.getTimesteps();
             let result = simulation.run(N);
+            if (d3.some(result, d => isNaN(d))) {
+                document.getElementById('nanwarning').style.display = 'block';
+            } else {
+                document.getElementById('nanwarning').style.display = 'none';
+            }
             /* global plot */
             plot.plot(result);
         });
