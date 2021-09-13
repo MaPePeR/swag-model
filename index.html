@@ -20,6 +20,7 @@
             }
             .math {
                 font-family: serif;
+                white-space: nowrap;
             }
             .reorder {
                 display: none;
@@ -347,7 +348,7 @@
                 <div class="col-12">
                     <h3>Simulation</h3>
                     <p>The simulation uses these formulas to advance from one time step to the next:</p>
-                    <center><table class="math">
+                    <center class="math" style="overflow-y: auto;"><table>
                         <tr><td>
                             d<i>I<sub>i,j</sub></i>/d<i>t</i>
                         </td><td>
