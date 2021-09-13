@@ -659,21 +659,6 @@
                 loadFromHash();
             }, false);
             if(!loadFromHash()) {
-                model.addInfectionType({name: 'Inf1', beta: 1.5, gamma: 0.7});
-                //model.addInfectionType({name: 'Inf2', beta: 2, gamma: 0.6});
-                model.addGroup('Bg1');
-                //model.addGroup('Bg2')
-                //model.addGroup('Bg3')
-
-                model.setBetaMultipliers(0, [1]);
-                model.setInitialCondition([999,1]);
-                model.setGroupTransitions(0, [1]);
-
-                model.setGlobalBetaPoints([
-                    {x: 0, y: 1},
-                    {x: 100, y: 0.5},
-                    {x: 200, y: 0.75},
-                ])
             }
         </script>
     </body>
