@@ -611,5 +611,23 @@ var ui = (function () {
             ui.updateGroupTransitionCard();
             ui.updateInitialConditionCard();
         },
+        updateGlobalBetaMultiplierCard: function () {
+            const cardBody = document.getElementById('globalBetaMultiplierCard');
+            const fragment = document.createDocumentFragment();
+
+            const lineplot = new plot.EditableLinePlot(fragment, 300, 100, [0, model.getTimesteps()], [0, 1], true);
+            const points = model.getGlobalBetaPoints();
+            if (points.length == 0) {
+                lineplot.insertPoint(0, 1);
+            } else {
+                for (const point of points) {
+                    lineplot.insertPoint(point.x, point.y);
+                }
+            }
+
+            fragment.querySelector('svg').setAttribute('width', '100%');
+
+            cardBody.replaceChildren(fragment);
+        },
     };
 })();

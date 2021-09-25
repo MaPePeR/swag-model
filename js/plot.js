@@ -7,12 +7,13 @@
 /* exported plot */
 var plot = (function () {
     class EditableLinePlot {
-        constructor(element, width, height, xdomain, ydomain) {
-            const margin = {top: 20, right: 30, bottom: 30, left: 55};
+        constructor(element, width, height, xdomain, ydomain, disabled) {
+            const margin = {top: 20, right: 30, bottom: 30, left: 30};
             this.element = element;
             this.width = width;
             this.height = height;
             this.xdomain = xdomain;
+            this.disabled = !!disabled;
             this.x = d3.scaleLinear()
                 .clamp(true)
                 .domain(xdomain)
@@ -24,12 +25,16 @@ var plot = (function () {
                 .range([ height, 0]);
             this.nodes = [];
             this.links = [];
-            this.svg = d3.select(this.element).append('svg')
-                .on("click", (event, d) => {
+            this.svg = d3.select(this.element).append('svg');
+            if (!this.disabled) {
+                this.svg.on("click", (event, d) => {
+                    if (this.disabled) return;
                     var coords = d3.pointer(event);
                     this.insertPoint(this.x.invert(coords[0] - margin.left), this.y.invert(coords[1] - margin.top));
-                })
-                .attr('class', 'editablelineplot')
+                });
+            }
+            this.svg = this.svg
+                .attr('class', 'editablelineplot' + (this.disabled ? ' disabled' : ''))
                 .attr('width', width + margin.left + margin.right)
                 .attr('height', height + margin.bottom + margin.top)
                 .attr('viewBox', [0, 0, width + margin.left + margin.right, height + margin.bottom + margin.top])
@@ -60,43 +65,45 @@ var plot = (function () {
             this.redrawLines();
         }
         redrawNodes() {
-            this.svgnodes.selectAll('circle')
+            const nodes = this.svgnodes.selectAll('circle')
                 .data(this.nodes)
                     .join("circle")
                         .attr("r", 4)
                         .attr("cx", d => d.x)
-                        .attr("cy", d => d.y)
-                        .on('click', function (lineplot) {
-                            return function (event, d) {
-                                lineplot.nodes = lineplot.nodes.filter(item => item !== d);
-                                lineplot.redrawNodes();
-                                lineplot.redrawLines();
-                                event.stopPropagation();
-                            };
-                        }(this))
-                        .call((function (lineplot) {
-                            function dragstarted(event, d) {
-                                d3.select(this).attr("stroke", "blue");
-                            }
+                        .attr("cy", d => d.y);
+            if (!this.disabled) {
+                nodes.on('click', function (lineplot) {
+                    return function (event, d) {
+                        lineplot.nodes = lineplot.nodes.filter(item => item !== d);
+                        lineplot.redrawNodes();
+                        lineplot.redrawLines();
+                        event.stopPropagation();
+                    };
+                }(this))
+                .call((function (lineplot) {
+                    function dragstarted(event, d) {
+                        d3.select(this).attr("stroke", "blue");
+                    }
 
-                            function dragged(event, d) {
-                                d.datax = Math.round(lineplot.x.invert(event.x));
-                                d.datay = lineplot.y.invert(event.y);
-                                d.x = lineplot.x(d.datax);
-                                d.y = lineplot.y(d.datay);
-                                d3.select(this).attr("cx", d.x).attr("cy", d.y);
-                                lineplot.redrawLines();
-                            }
+                    function dragged(event, d) {
+                        d.datax = Math.round(lineplot.x.invert(event.x));
+                        d.datay = lineplot.y.invert(event.y);
+                        d.x = lineplot.x(d.datax);
+                        d.y = lineplot.y(d.datay);
+                        d3.select(this).attr("cx", d.x).attr("cy", d.y);
+                        lineplot.redrawLines();
+                    }
 
-                            function dragended(event, d) {
-                                d3.select(this).attr("stroke", null);
-                            }
+                    function dragended(event, d) {
+                        d3.select(this).attr("stroke", null);
+                    }
 
-                            return d3.drag()
-                              .on("start", dragstarted)
-                              .on("drag", dragged)
-                              .on("end", dragended);
-                        })(this));
+                    return d3.drag()
+                      .on("start", dragstarted)
+                      .on("drag", dragged)
+                      .on("end", dragended);
+                })(this));
+            }
         }
         redrawLines() {
             this.nodes.sort((a, b) => d3.ascending(a.datax, b.datax));

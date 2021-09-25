@@ -68,7 +68,7 @@
                 min-width: 4em;
             }
 
-            .editablelineplot .node circle:hover {
+            .editablelineplot:not(.disabled) .node circle:hover {
                 fill: blue;
             }
         </style>
@@ -335,6 +335,9 @@
                                 <span>Global &beta; multiplier <span class="math ms-3"><i>&beta;</i>(<i>t</i>)</span></span>
                                 <button type="button" name="button" class="btn btn-link py-0" aria-label="Edit global beta multiplier" data-bs-toggle="modal" data-bs-target="#editGlobalBetaModal"><i class="bi bi-pencil"></i></button>
                             </div>
+                        </div>
+                        <div class="card-body" id="globalBetaMultiplierCard">
+
                         </div>
                     </div>
                 </div>

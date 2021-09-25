@@ -247,6 +247,7 @@ var model = (function () {
             ui.recreateGroupTable();
             ui.updateTimesteps();
             ui.updateParameterCards();
+            ui.updateGlobalBetaMultiplierCard();
         }
 
         compressB64(b64text) {
@@ -437,6 +438,7 @@ var model = (function () {
         }
         setGlobalBetaPoints(points) {
             this.globalBetaPoints = points;
+            ui.updateGlobalBetaMultiplierCard();
         }
 
         setTimesteps(n) {
