@@ -153,12 +153,19 @@ var ui = (function () {
                 this.fillPane(tabPanes.lastElementChild, tabNumber, tabTitle);
             }
 
-            tabs.querySelector(':first-child > button').setAttribute('aria-selected', 'true');
-            tabs.querySelector(':first-child > button').classList.add('active');
-            tabPanes.querySelector(':first-child').classList.add('show', 'active');
+            const tabContainer = this.element.querySelector('.nav.nav-tabs');
+            const tabPaneContainer = this.element.querySelector('.tab-content');
+            tabContainer.replaceChildren(tabs);
+            tabPaneContainer.replaceChildren(tabPanes);
 
-            this.element.querySelector('.nav.nav-tabs').replaceChildren(tabs);
-            this.element.querySelector('.tab-content').replaceChildren(tabPanes);
+            const initialTab = this.getInitialTab() + 1;
+            tabContainer.querySelector(':nth-child(' + initialTab + ') > button').setAttribute('aria-selected', 'true');
+            tabContainer.querySelector(':nth-child(' + initialTab + ') > button').classList.add('active');
+            tabPaneContainer.querySelector('.tab-pane:nth-child(' + initialTab + ')').classList.add('show', 'active');
+        }
+
+        getInitialTab() {
+            return 0;
         }
 
         getTabs() {
@@ -180,6 +187,10 @@ var ui = (function () {
                 tabs[item.number] = item.name;
             });
             return tabs;
+        }
+        getInitialTab() {
+            const tabs = document.getElementById('betaMultiplierCardTabs');
+            return [].indexOf.call(tabs.children, tabs.querySelector('.active').parentNode);
         }
         fillPane(paneElement, infectionTypeNumber, title) {
             let groups = model.getGroupNames();
@@ -232,6 +243,10 @@ var ui = (function () {
                 tabs[item.number] = item.name;
             });
             return tabs;
+        }
+        getInitialTab() {
+            const tabs = document.getElementById('groupTransitionCardTabs');
+            return [].indexOf.call(tabs.children, tabs.querySelector('.active').parentNode);
         }
         fillPane(paneElement, infectionTypeNumber, title) {
             let groups = model.getGroupNames();
