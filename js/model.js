@@ -241,7 +241,7 @@ var model = (function () {
             ui.recreateInfectionTypeTable();
             ui.recreateGroupTable();
             ui.updateTimesteps();
-            ui.updateInitialConditionCard();
+            ui.updateParameterCards();
         }
 
         compressB64(b64text) {
@@ -280,6 +280,7 @@ var model = (function () {
             this.initialCondition.addColumn();
 
             ui.recreateInfectionTypeTable();
+            ui.updateParameterCards();
             return newInfectionType.number;
         }
 
@@ -300,6 +301,7 @@ var model = (function () {
             this.initialCondition.deleteColumn(1 + infectionTypeNumber);
 
             ui.recreateInfectionTypeTable();
+            ui.updateParameterCards();
         }
 
         getInfectionType(infectionTypeNumber) {
@@ -310,9 +312,14 @@ var model = (function () {
             return this.infectionTypes.map(type => Object.assign({}, type));
         }
 
+        getInfectionTypeNames() {
+            return this.infectionTypes.map(type => type.name);
+        }
+
         updateInfectionType(infectionTypeNumber, infectionType) {
             this.infectionTypes[infectionTypeNumber] = this.createInfectionType(infectionTypeNumber, infectionType);
             ui.recreateInfectionTypeTable();
+            ui.updateParameterCards();
         }
 
 
@@ -335,11 +342,13 @@ var model = (function () {
             this.initialCondition.addRow();
 
             ui.recreateGroupTable();
+            ui.updateParameterCards();
         }
 
         updateGroup(number, groupName) {
             this.groups[number] = {name: groupName, number: number};
             ui.recreateGroupTable();
+            ui.updateParameterCards();
         }
 
         deleteGroup(number) {
@@ -365,6 +374,7 @@ var model = (function () {
             this.initialCondition.deleteRow(number);
 
             ui.recreateGroupTable();
+            ui.updateParameterCards();
         }
 
         getGroup(number) {
@@ -385,6 +395,7 @@ var model = (function () {
 
         setBetaMultipliers(infectionTypeNumber, betaMultiplier) {
             this.betaMultipliers[infectionTypeNumber].setData(betaMultiplier);
+            ui.updateBetaMultiplierCard();
         }
 
         getGammaMultipliers() {
@@ -393,10 +404,12 @@ var model = (function () {
 
         setGammaMultipliers(data) {
             this.gammaMultipliers.setData(data);
+            ui.updateGammaMultiplierCard();
         }
 
         setGroupTransitions(infectionTypeNumber, transitions) {
             this.transitions[infectionTypeNumber].setData(transitions);
+            ui.updateGroupTransitionCard();
         }
 
         getGroupTransitions(infectionTypeNumber) {

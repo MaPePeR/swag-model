@@ -400,6 +400,50 @@ var ui = (function () {
         ui.updateLibraryList();
     });
 
+    function makeTabs(tabTitles, idPrefix, tabContainer, paneContainer, fillPane) {
+        const tabFragment = document.createDocumentFragment();
+        const panesFragment = document.createDocumentFragment();
+        const tab = document.createElement('li');
+        const tabButton = document.createElement('button');
+
+        // data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true"
+        tabButton.type = "button";
+        tab.appendChild(tabButton);
+        tab.classList.add('nav-item');
+        tabButton.classList.add('nav-link');
+        tabButton.type = 'button';
+        tabButton.dataset.bsToggle = "tab";
+        tabButton.setAttribute('aria-selected', false);
+
+        const tabPane = document.createElement('div');
+        tabPane.classList.add('tab-pane');
+        tabPane.role = 'tabpanel';
+
+        tabTitles.forEach((title, i) => {
+            tabButton.innerText = title;
+            tabButton.dataset.bsTarget = "#" + idPrefix + i;
+            tabButton.id = idPrefix + "Tab" + i;
+            tabButton.setAttribute('aria-controls', idPrefix + i);
+            tabFragment.appendChild(document.importNode(tab, true));
+
+            tabPane.id = idPrefix + i;
+            tabPane.setAttribute('aria-labelledby', tabButton.id);
+
+
+            panesFragment.appendChild(document.importNode(tabPane, true));
+            fillPane(title, i, panesFragment.lastElementChild);
+        });
+
+        const firstTab = tabFragment.querySelector('li:first-of-type button');
+        firstTab.classList.add('active');
+        firstTab.setAttribute('aria-selected', true);
+
+        panesFragment.querySelector('div:first-of-type').classList.add('active');
+        tabContainer.replaceChildren(tabFragment);
+        paneContainer.replaceChildren(panesFragment);
+
+    }
+
 
 
     function recreateInfectionTypeTable() {
@@ -502,8 +546,55 @@ var ui = (function () {
 
             document.getElementById('libraryListGroup').replaceChildren(fragment);
         },
+        updateBetaMultiplierCard: function () {
+            makeTabs(
+                model.getInfectionTypeNames(),
+                'betaMultiplierCardInfection',
+                document.getElementById('betaMultiplierCardTabs'),
+                document.getElementById('betaMultiplierCardTabPanes'),
+                function (tabTitle, tabid, paneElement) {
+                    const svg = d3.select(paneElement).append('svg').node();
+                    const matrix = model.getBetaMultipliers(tabid);
+                    const maxValue = d3.max(matrix.array);
+                    const colorMap = d3.scaleDiverging().domain([0, 1, Math.max(maxValue, 1)]).interpolator(x => d3.interpolateRdBu(1 - x));
+                    plot.plotMatrix(svg, matrix, colorMap, model.getGroupNames(), model.getGroupNames());
+                }
+            );
+        },
+        updateGammaMultiplierCard: function () {
+            const el = document.getElementById('gammaMultiplierCardPlot');
+            const matrix = model.getGammaMultipliers();
+            const extend = d3.extent(matrix.array);
+            const colorMap = d3.scaleDiverging().domain([extend[0], 1, extend[1]]).interpolator(d3.interpolateRdBu);
+            plot.plotMatrix(el, matrix, colorMap, model.getGroupNames(), model.getInfectionTypeNames());
+        },
+        updateGroupTransitionCard: function () {
+            makeTabs(
+                model.getInfectionTypeNames(),
+                'groupTransitionCardInfection',
+                document.getElementById('groupTransitionCardTabs'),
+                document.getElementById('groupTransitionCardTabPanes'),
+                function (tabTitle, tabid, paneElement) {
+                    const svg = d3.select(paneElement).append('svg').node();
+                    const matrix = model.getGroupTransitions(tabid);
+                    const colorMap = d3.scaleSequential().domain([0, 1]).interpolator(d3.interpolateViridis);
+                    plot.plotMatrix(svg, matrix, colorMap, model.getGroupNames(), model.getGroupNames());
+                }
+            );
+        },
         updateInitialConditionCard: function () {
             document.getElementById('totalPopulationCount').innerText = d3.sum(model.getInitialCondition().array);
+
+            const el = document.getElementById('initialConditionCardPlot');
+            const matrix = model.getInitialCondition();
+            const colorMap = d3.scaleSequential().domain(d3.extent(matrix.array)).interpolator(d3.interpolateViridis);
+            plot.plotMatrix(el, matrix, colorMap, model.getGroupNames(), ['Uninfected'].concat(model.getInfectionTypeNames()));
+        },
+        updateParameterCards: function () {
+            ui.updateBetaMultiplierCard();
+            ui.updateGammaMultiplierCard();
+            ui.updateGroupTransitionCard();
+            ui.updateInitialConditionCard();
         },
     };
 })();

@@ -144,6 +144,60 @@ var plot = (function () {
             this.height = 400;
         }
 
+        plotMatrix(svg, matrix, colorMap, rowLabels, columnLabels) {
+            const tableCellHeight = 20;
+            const tableCellWidth = 20;
+            const topLabelHeight = 40;
+            const leftLabelWidth = 40;
+            const tableHeight =  matrix.nrows * tableCellHeight;
+            const tableWidth = matrix.ncols * tableCellWidth;
+            const height = tableHeight + this.margin.bottom + this.margin.top + topLabelHeight;
+
+            const matrixView = matrix.arrayView();
+            svg = d3.select(svg)
+                .attr('width', '100%')
+                .attr('height', height)
+                .attr('viewBox', [
+                    -leftLabelWidth,
+                    -this.margin.top - topLabelHeight,
+                    2 * leftLabelWidth + tableWidth,
+                    this.margin.top + topLabelHeight + tableHeight + this.margin.top,
+                ]);
+            svg.selectAll("*").remove();
+            const rows = svg.selectAll('.matrixplotrow')
+                .data(matrixView)
+                .enter().append("g")
+                    .attr("class", "matrixplotrow")
+                    .attr("transform", function(d, i) {
+                        return "translate(0," + (i * tableCellHeight) + ")";
+                    });
+            rows.selectAll(".cell")
+                    .data(d => d)
+                .enter().append("rect")
+                    .attr("class", "cell")
+                    .attr("x", (d, i) => i * tableCellWidth)
+                    .attr("width", tableCellWidth - 1)
+                    .attr("height", tableCellHeight - 1)
+                    .style("fill", colorMap)
+                    //.attr('stroke', 'black')
+                    //.attr('stroke-width', 0.5)
+                    .append('title')
+                        .text(d => d);
+            svg.append('g').selectAll('text')
+                .data(rowLabels).enter()
+                    .append('text')
+                    .attr('x', -3)
+                    .attr("y", (d, i) => (i + 1) * tableCellHeight)
+                    .attr('text-anchor', "end")
+                    .attr('dominant-baseline', "text-after-edge")
+                    .text(d => d);
+            svg.append('g').selectAll('text')
+                .data(columnLabels).enter()
+                    .append('text')
+                    .attr('transform', (d, i) => 'translate(' + (i + 0.5) * tableCellWidth + ', 0) rotate(-45) ')
+                    .text(d => d);
+        }
+
         makeSVG(id) {
             d3.select(id).selectAll("*").remove();
             return d3.select(id)

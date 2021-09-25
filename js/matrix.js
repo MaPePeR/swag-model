@@ -86,6 +86,13 @@ class Matrix {
             return ((i % this.ncols) === 0 && i !== 0) ? "\n" + value + "" : '' + value;
         }, this).join(' ');
     }
+    arrayView() {
+        const a = new Array(this.nrows);
+        for (let i = 0; i < this.nrows; ++i) {
+            a[i] = this.array.subarray(i * this.ncols, (i + 1) * this.ncols);
+        }
+        return a;
+    }
 }
 
 (function (test) {

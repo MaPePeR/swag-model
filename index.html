@@ -257,9 +257,11 @@
                                 <span>Group &beta; multipliers <span class="math ms-3"><i>b<sub>i,j,k</sub></i></span></span>
                                 <button type="button" name="button" class="btn btn-link py-0" aria-label="Edit beta multipliers" data-bs-toggle="modal" data-bs-target="#editBetaMultiplierModal"><i class="bi bi-pencil"></i></button>
                             </div>
+                            <ul class="nav nav-tabs card-header-tabs" id="betaMultiplierCardTabs">
+                            </ul>
                         </div>
+                        <div class="card-body tab-content" id="betaMultiplierCardTabPanes"></div>
                     </div>
-                    <!--<img src="..." class="card-img-bottom" alt="Heatmap showing the beta multipliers"/>-->
                 </div>
 
                 <!-- Define gamma multipliers -->
@@ -279,8 +281,8 @@
                                 <button type="button" name="button" class="btn btn-link py-0" aria-label="Edit beta multipliers" data-bs-toggle="modal" data-bs-target="#editGammaMultiplierModal"><i class="bi bi-pencil"></i></button>
                             </div>
                         </div>
+                        <svg id="gammaMultiplierCardPlot"></svg>
                     </div>
-                    <!--<img src="..." class="card-img-bottom" alt="Heatmap showing the beta multipliers"/>-->
                 </div>
 
                 <!-- Define Group state machine -->
@@ -296,17 +298,11 @@
                                 <span>Group transitions <span class="math ms-3"><i>t<sub>i,j,k</sub></i></span></span>
                                 <button type="button" name="button" class="btn btn-link py-0" aria-label="Edit group transitions" data-bs-toggle="modal" data-bs-target="#editGroupTransitionsModal"><i class="bi bi-pencil"></i></button>
                             </div>
-                            <!--<ul class="nav nav-tabs card-header-tabs">
-                                <li class="nav-item">
-                                    <a class="nav-link active" aria-current="true" href="#">Infection A</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">Infection B</a>
-                                </li>
-                            </ul>-->
+                            <ul class="nav nav-tabs card-header-tabs" id="groupTransitionCardTabs">
+                            </ul>
                         </div>
+                        <div class="card-body tab-content" id="groupTransitionCardTabPanes"></div>
                     </div>
-                    <!--<img src="..." class="card-img-bottom" alt="Heatmap showing the group transitions"/>-->
                 </div>
 
 
@@ -324,6 +320,7 @@
                                 <button type="button" name="button" class="btn btn-link py-0" aria-label="Edit initial conditions" data-bs-toggle="modal" data-bs-target="#editInitialConditionsModal"><i class="bi bi-pencil"></i></button>
                             </div>
                         </div>
+                        <svg id="initialConditionCardPlot"></svg>
                     </div>
                 </div>
                 <!-- Define outside influences & events -->
