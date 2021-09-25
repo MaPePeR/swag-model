@@ -18,12 +18,17 @@ class Matrix {
         m.setData(array);
         return m;
     }
-    addColumn() {
+    addColumn(fillf) {
         const newncols = this.ncols + 1;
         let newArray = new this.baseType(this.nrows * newncols);
         if (this.ncols > 0) {
             for (let i = 0; i < this.nrows; i++) {
                 newArray.set(this.array.subarray(i * this.ncols, (i + 1) * this.ncols), i * newncols);
+            }
+        }
+        if (fillf) {
+            for (let i = 0; i < this.nrows; i++) {
+                newArray[i * newncols + this.ncols] = fillf(i, this.ncols, this);
             }
         }
         this.ncols = newncols;
@@ -46,9 +51,14 @@ class Matrix {
         this.ncols = newncols;
         this.array = newArray;
     }
-    addRow() {
+    addRow(fillf) {
         let newArray = new this.baseType((this.nrows + 1) * this.ncols);
         newArray.set(this.array, 0);
+        if (fillf) {
+            for (let i = 0; i < this.ncols; ++i) {
+                newArray[this.nrows * this.ncols + i] = fillf(this.nrows, i, this);
+            }
+        }
         this.nrows += 1;
         this.array = newArray;
     }
@@ -93,6 +103,14 @@ class Matrix {
         }
         return a;
     }
+    fill(fillf) {
+        for (let row = 0; row < this.nrows; ++row) {
+            for (let col = 0; col < this.ncols; ++col) {
+                this.array[row * this.ncols + col] = fillf(row, col, this);
+            }
+        }
+        return this;
+    }
 }
 
 (function (test) {
@@ -122,7 +140,7 @@ class Matrix {
     let m = makeTestMatrix(4, 3);
     assertEquals(4, m.nrows);
     assertEquals(3, m.ncols);
-    m.addColumn();
+    m.addColumn(() => 0);
     assertEquals(4, m.nrows);
     assertEquals(4, m.ncols);
     assertEquals(4 * 4, m.array.length);
@@ -143,7 +161,7 @@ class Matrix {
     m = makeTestMatrix(4, 3);
     assertEquals(4, m.nrows);
     assertEquals(3, m.ncols);
-    m.addRow();
+    m.addRow(() => 0);
     assertEquals(5, m.nrows);
     assertEquals(3, m.ncols);
 

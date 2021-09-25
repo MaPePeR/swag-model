@@ -12,6 +12,11 @@ var model = (function () {
     const FLAG_HAVE_GAMMA_MULTIPLIERS = 2;
     const FLAG_HAVE_GLOBAL_BETA_POINTS = 4;
 
+    const defaultBetaMultiplier = () => 1;
+    const defaultGammaMultiplier = () => 1;
+    const defaultTransition = (row, col) => (row == col ? 1 : 0);
+    const defaultInitialCondition = (row, col) => (row == col && row == 0 ? 1000 : 0)
+
     class Model {
         constructor() {
             this.infectionTypes = [];
@@ -271,13 +276,13 @@ var model = (function () {
             let newInfectionType = this.createInfectionType(this.infectionTypes.length, infectionType);
             this.infectionTypes.push(newInfectionType);
 
-            this.betaMultipliers.push(new Matrix(this.groups.length, this.groups.length));
+            this.betaMultipliers.push(new Matrix(this.groups.length, this.groups.length).fill(defaultBetaMultiplier));
 
-            this.gammaMultipliers.addColumn();
+            this.gammaMultipliers.addColumn(defaultGammaMultiplier);
 
-            this.transitions.push(new Matrix(this.groups.length, this.groups.length));
+            this.transitions.push(new Matrix(this.groups.length, this.groups.length).fill(defaultTransition));
 
-            this.initialCondition.addColumn();
+            this.initialCondition.addColumn(defaultInitialCondition);
 
             ui.recreateInfectionTypeTable();
             ui.updateParameterCards();
@@ -328,18 +333,18 @@ var model = (function () {
             this.groups.push({name: groupName, number: number});
 
             for (const betaMultiplierMatrix of this.betaMultipliers) {
-                betaMultiplierMatrix.addColumn();
-                betaMultiplierMatrix.addRow();
+                betaMultiplierMatrix.addColumn(defaultBetaMultiplier);
+                betaMultiplierMatrix.addRow(defaultBetaMultiplier);
             }
 
-            this.gammaMultipliers.addRow();
+            this.gammaMultipliers.addRow(defaultGammaMultiplier);
 
             for (const transitionMatrix of this.transitions) {
-                transitionMatrix.addColumn();
-                transitionMatrix.addRow();
+                transitionMatrix.addColumn(defaultTransition);
+                transitionMatrix.addRow(defaultTransition);
             }
 
-            this.initialCondition.addRow();
+            this.initialCondition.addRow(defaultInitialCondition);
 
             ui.recreateGroupTable();
             ui.updateParameterCards();
