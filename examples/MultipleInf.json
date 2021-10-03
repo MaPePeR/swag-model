@@ -4,6 +4,7 @@
     "infectionTypes": "Two infections with different β and γ values. The first infection has a larger β and larger γ, so it is more infectious per time step, but the infection doesn't last as long.",
     "groups": "There are three groups. One for the Susceptible, one for people that were infected with Inf1 first, and another one for people that got Inf2 as their first infection.",
     "betaMultipliers": "The beta multipliers are set to 1, so all groups can infect all groups equally.",
+    "gammaMultipliers": "The gamma multipliers don't have an effect.",
     "transitions": "Susceptible that get newly infected are moved to the group that matches the infection type and then remain in that group.",
     "initialCondition": "We start with 998 susceptible and 1 infected person for each infection type.",
     "globalBetaMultiplier": "No global beta multiplier is used.",

@@ -4,6 +4,7 @@
     "infectionTypes": "There are two infections defined. One \"normal\" infection with β=0.4 and γ=0.04 and an additional \"vaccination\" infection that has γ=0, so no way to \"recover\". Thus, the vaccinated population remain \"infected\" and cannot be infected by the real infection.",
     "groups": "There are three groups. One for the Susceptible, one for Recovered and one for Deceased.",
     "betaMultipliers": "The beta multipliers are set up in the same way as for the normal SIRD model. Only the susceptible can infect and be infected.",
+    "gammaMultipliers": "The gamma multipliers don't have an effect.",
     "transitions": "After infection, the susceptible are split 87.5% to Recovered and 12.5% to Deceased. This coresponds to γ = 0.04 · 0.875 = 0.35 and μ = 0.04 · 0.125 = 0.05 in traditional SIRD.",
     "initialCondition": "We start with 996.5 susceptible, 3 infected people and 0.5 vaccinated people.",
     "globalBetaMultiplier": "No global beta multiplier is used.",

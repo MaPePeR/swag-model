@@ -4,6 +4,7 @@
     "infectionTypes": "Only one infection with β=0.2 and γ=0.04 is defined.",
     "groups": "There are two groups. One for no immunity and a second one for partial immunity.",
     "betaMultipliers": "The beta multipliers are set up in a way, that infection between a person without immunity and a person with immunity is reduced by 50% and infection between two people with partial immunity is reduced by 75%",
+    "gammaMultipliers": "The gamma multipliers don't have an effect.",
     "transitions": "After infection, the susceptible are moved to the partial immunity group.",
     "initialCondition": "We start with 999 susceptible and 1 infected people.",
     "globalBetaMultiplier": "No global beta multiplier is used.",

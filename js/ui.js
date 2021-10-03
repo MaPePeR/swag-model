@@ -353,6 +353,7 @@ var ui = (function () {
             t.content.querySelector('.modelinfections').innerText = this.libraryentry.infectionTypes;
             t.content.querySelector('.groups').innerText = this.libraryentry.groups;
             t.content.querySelector('.betaMultipliers').innerText = this.libraryentry.betaMultipliers;
+            t.content.querySelector('.gammaMultipliers').innerText = this.libraryentry.gammaMultipliers;
             t.content.querySelector('.transitions').innerText = this.libraryentry.transitions;
             t.content.querySelector('.initialCondition').innerText = this.libraryentry.initialCondition;
             t.content.querySelector('.globalBetaMultiplier').innerText = this.libraryentry.globalBetaMultiplier;

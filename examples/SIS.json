@@ -4,6 +4,7 @@
     "infectionTypes": "Only one infection with β=0.5 and γ=0.1 is defined.",
     "groups": "Only a single group is needed.",
     "betaMultipliers": "The single multiplier is set to 1.0",
+    "gammaMultipliers": "The gamma multipliers don't have an effect.",
     "transitions": "Because there is only one group and one infection, no transitions can occur.",
     "initialCondition": "We start with 499 susceptible and 1 infected people.",
     "globalBetaMultiplier": "No global beta multiplier is used.",
