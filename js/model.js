@@ -15,7 +15,7 @@ var model = (function () {
     const defaultBetaMultiplier = () => 1;
     const defaultGammaMultiplier = () => 1;
     const defaultTransition = (row, col) => (row == col ? 1 : 0);
-    const defaultInitialCondition = (row, col) => (row == col && row == 0 ? 1000 : 0)
+    const defaultInitialCondition = (row, col) => (row == col && row == 0 ? 1000 : 0);
 
     class Model {
         constructor() {
