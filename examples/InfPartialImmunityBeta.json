@@ -1,5 +1,5 @@
 {
-    "name": "Partial immunity with Beta Multipliers",
+    "name": "Partial immunity with β Multipliers",
     "description": "A SIS model with an infection that grants partial immunity after infection.",
     "infectionTypes": "Only one infection with β=0.2 and γ=0.04 is defined.",
     "groups": "There are two groups. One for no immunity and a second one for partial immunity.",

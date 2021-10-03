@@ -6,8 +6,8 @@ const globalLibrary = {
     "SIS model": "examples/SIS.json",
     "SIRD model": "examples/SIRD.json",
     "Multiple infections": "examples/MultipleInf.json",
-    "Partial immunity with Beta Multipliers": "examples/InfPartialImmunityBeta.json",
-    "Partial immunity with Gamma Multipliers": "examples/InfPartialImmunityGamma.json",
+    "Partial immunity with β Multipliers": "examples/InfPartialImmunityBeta.json",
+    "Partial immunity with γ Multipliers": "examples/InfPartialImmunityGamma.json",
     "Vaccination as infection": "examples/vaccinationInfection.json",
 };
 
