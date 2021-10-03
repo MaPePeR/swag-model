@@ -1,0 +1,12 @@
+{
+    "name": "Partial immunity with Gamma Multipliers",
+    "description": "A SIS model with an infection that grants partial immunity after infection.",
+    "infectionTypes": "Only one infection with β=0.2 and γ=0.04 is defined.",
+    "groups": "There are two groups. One for no immunity and a second one for partial immunity.",
+    "betaMultipliers": "The beta multipliers don't have an effect.",
+    "gammaMultipliers": "The gamma multipliers makes the infection for people with partial immunity shorter by multiplying the gamma value by 4.",
+    "transitions": "After infection, the susceptible are moved to the partial immunity group.",
+    "initialCondition": "We start with 999 susceptible and 1 infected people.",
+    "globalBetaMultiplier": "No global beta multiplier is used.",
+    "model": "AAIAAg*1E+TMzNPSPXCg*1I/g*0QI*6/g*5D+*0BEecAAP4*EB9*1CY*0BJ*1bg*0GY*0Bl*1Yw*0HQ*0Bp*1bw*0G4*6Tg*0G8*1g*1SQ*0G0*0Bt*1dQ*0G4*0Bp*1d*1Hk*6U*1GE*0By*1d*1Gk*0Bh*1b*1C*1BJ*1bQ*0G0*0B1*1bg*0Gk*0B0*1eQ=="
+}
